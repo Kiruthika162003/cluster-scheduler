@@ -29,6 +29,7 @@ class Waiting:
 @dataclass
 class SchedulingQueue:
     waiting: dict[str, Waiting] = field(default_factory=dict)
+    aging_every: int = 0
     cluster_shape: int = 0
     promotions_on_change: int = 0
 
@@ -47,9 +48,15 @@ class SchedulingQueue:
         ]
         for held in due:
             held.passes_waited += 1
+
+        def effective(held: Waiting) -> int:
+            if not self.aging_every:
+                return held.priority
+            return held.priority + held.passes_waited // self.aging_every
+
         return [
             held.name
-            for held in sorted(due, key=lambda w: (-w.priority, w.name))
+            for held in sorted(due, key=lambda w: (-effective(w), w.name))
         ]
 
     def refuse(self, name: str, now: int) -> int:

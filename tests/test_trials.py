@@ -16,6 +16,7 @@ from fleet.trials import (
     packing,
     rolloutpace,
     slivers,
+    starvation,
     warmupdebt,
 )
 from fleet.trials.registry import TRIALS, all_verdicts, broken, report
@@ -50,6 +51,7 @@ class TestEveryTrial:
             packing,
             chaosfloor,
             moneybill,
+            starvation,
         ],
     )
     def test_the_trial_holds(self, trial):

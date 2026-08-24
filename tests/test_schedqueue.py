@@ -78,3 +78,28 @@ class TestStarvation:
         queue.ready(now=0)
         queue.forget("t")
         assert queue.starving(passes=1) == []
+
+
+class TestAging:
+    def test_a_waited_task_outranks_a_fresh_rival(self):
+        queue = SchedulingQueue(aging_every=2)
+        queue.offer("old", 1)
+        for now in range(4):
+            queue.ready(now)
+        queue.offer("fresh", 2)
+        assert queue.ready(now=4)[0] == "old"
+
+    def test_two_tasks_aging_together_never_swap(self):
+        queue = SchedulingQueue(aging_every=2)
+        queue.offer("old", 1)
+        queue.offer("new", 2)
+        for now in range(10):
+            assert queue.ready(now)[0] == "new"
+
+    def test_without_aging_priority_is_static(self):
+        queue = SchedulingQueue()
+        queue.offer("old", 1)
+        for now in range(20):
+            queue.ready(now)
+        queue.offer("fresh", 2)
+        assert queue.ready(now=20)[0] == "fresh"
