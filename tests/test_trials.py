@@ -16,6 +16,7 @@ from fleet.trials import (
     oscillation,
     overcommit,
     packing,
+    rollbacklag,
     rolloutpace,
     slivers,
     softstep,
@@ -62,6 +63,7 @@ class TestEveryTrial:
             softstep,
             noisyfair,
             splitbrain,
+            rollbacklag,
         ],
     )
     def test_the_trial_holds(self, trial):

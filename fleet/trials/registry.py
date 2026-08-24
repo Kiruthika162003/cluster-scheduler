@@ -27,6 +27,7 @@ TRIALS = (
     "fleet.trials.softstep",
     "fleet.trials.noisyfair",
     "fleet.trials.splitbrain",
+    "fleet.trials.rollbacklag",
 )
 
 
