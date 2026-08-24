@@ -32,13 +32,22 @@ class TestPlans:
         plan = preemptor.plan_for_node(wanted("w", 200, 5), node("n"), [])
         assert plan is not None and plan.victims == () and plan.cost == 0
 
-    def test_victims_are_taken_cheapest_first(self):
+    def test_one_victim_suffices_when_it_frees_enough(self):
         active = [
             bound("cheap", "n", 400, 1),
             bound("mid", "n", 400, 2),
         ]
         preemptor = Preemptor()
         plan = preemptor.plan_for_node(wanted("w", 500, 5), node("n"), active)
+        assert plan.victims == ("cheap",)
+
+    def test_victims_accumulate_cheapest_first_until_the_fit(self):
+        active = [
+            bound("cheap", "n", 400, 1),
+            bound("mid", "n", 400, 2),
+        ]
+        preemptor = Preemptor()
+        plan = preemptor.plan_for_node(wanted("w", 900, 5), node("n"), active)
         assert plan.victims == ("cheap", "mid")
 
     def test_equal_priority_is_never_a_victim(self):
