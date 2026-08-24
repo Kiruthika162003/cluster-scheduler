@@ -30,6 +30,7 @@ TRIALS = (
     "fleet.trials.rollbacklag",
     "fleet.trials.filterorder",
     "fleet.trials.balloonpay",
+    "fleet.trials.twobills",
 )
 
 

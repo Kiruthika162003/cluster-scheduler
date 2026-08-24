@@ -25,6 +25,7 @@ from fleet.trials import (
     splitbrain,
     spotnotice,
     starvation,
+    twobills,
     warmupdebt,
 )
 from fleet.trials.registry import TRIALS, all_verdicts, broken, report
@@ -68,6 +69,7 @@ class TestEveryTrial:
             rollbacklag,
             filterorder,
             balloonpay,
+            twobills,
         ],
     )
     def test_the_trial_holds(self, trial):
