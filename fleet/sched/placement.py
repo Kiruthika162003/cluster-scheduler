@@ -15,6 +15,7 @@ from __future__ import annotations
 from dataclasses import dataclass, field
 
 from fleet.audit import Journal
+from fleet.control.budget import Guard
 from fleet.errors import Unschedulable
 from fleet.objects import Task
 from fleet.sched.classes import Verdicts, class_of
@@ -30,9 +31,11 @@ class Engine:
     preemptor: Preemptor = field(default_factory=Preemptor)
     queue: SchedulingQueue = field(default_factory=SchedulingQueue)
     verdicts: Verdicts = field(default_factory=Verdicts)
+    guard: Guard | None = None
     journal: Journal = field(default_factory=Journal)
     placed: int = 0
     displaced: int = 0
+    preemptions_vetoed: int = 0
 
     def submit(self, store: Store, task: Task) -> None:
         store.add_task(task)
@@ -57,6 +60,20 @@ class Engine:
                 plan_possible = True
         return plan_possible
 
+    def _budget_permits(self, store: Store, task: Task) -> bool:
+        if self.guard is None:
+            return True
+        for node in store.nodes.values():
+            plan = self.preemptor.plan_for_node(task, node, store.active_tasks())
+            if plan is None:
+                continue
+            if all(
+                self.guard.may_evict(store, victim)[0] for victim in plan.victims
+            ):
+                return True
+        self.preemptions_vetoed += 1
+        return False
+
     def one_pass(self, store: Store, now: int) -> tuple[int, int]:
         placed = benched = 0
         for name in self.queue.ready(now):
@@ -72,7 +89,9 @@ class Engine:
                 continue
             except Unschedulable:
                 pass
-            if self._may_preempt_for(store, task):
+            if self._may_preempt_for(store, task) and self._budget_permits(
+                store, task
+            ):
                 plan = self.preemptor.make_room(store, task)
                 for victim_name in plan.victims:
                     victim = store.get_task(victim_name)

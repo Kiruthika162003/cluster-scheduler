@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+from fleet.control.budget import Budget, Guard
 from fleet.objects import Node, Resources, Task, TaskSpec
 from fleet.sched.placement import Engine
 from fleet.store import Store
@@ -88,3 +89,50 @@ class TestTreatyPreemption:
         engine.one_pass(store, now=1)
         story = engine.journal.story("batchling")
         assert "bind" in story and "displace" in story
+
+
+class TestBudgetVeto:
+    def test_the_floor_vetoes_a_treaty_legal_preemption(self):
+        store, _ = one_slot()
+        guard = Guard(
+            budgets=[
+                Budget(
+                    name="floor",
+                    selector_key="app",
+                    selector_value="web",
+                    min_available=1,
+                )
+            ]
+        )
+        engine = Engine(guard=guard)
+        web = Task(
+            spec=TaskSpec(
+                name="web-0",
+                needs=Resources(cpu=800, memory=800),
+                priority=10,
+                labels=(("app", "web"),),
+            )
+        )
+        engine.submit(store, web)
+        engine.one_pass(store, now=0)
+        engine.submit(store, task("crit", priority=1500))
+        engine.one_pass(store, now=1)
+        assert store.get_task("web-0").phase == "Bound"
+        assert store.get_task("crit").phase == "Pending"
+        assert engine.preemptions_vetoed == 1
+
+    def test_without_a_guard_the_treaty_alone_decides(self):
+        store, engine = one_slot()
+        web = Task(
+            spec=TaskSpec(
+                name="web-0",
+                needs=Resources(cpu=800, memory=800),
+                priority=10,
+                labels=(("app", "web"),),
+            )
+        )
+        engine.submit(store, web)
+        engine.one_pass(store, now=0)
+        engine.submit(store, task("crit", priority=1500))
+        engine.one_pass(store, now=1)
+        assert store.get_task("crit").phase == "Bound"
