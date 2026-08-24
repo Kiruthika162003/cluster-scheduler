@@ -48,6 +48,7 @@ class Sim:
     )
     now: int = 0
     availability: list[int] = field(default_factory=list)
+    serving_history: list[int] = field(default_factory=list)
     stuck_history: list[int] = field(default_factory=list)
 
     def add_nodes(self, count: int, cpu: int = 1000, memory: int = 1000) -> None:
@@ -58,6 +59,17 @@ class Sim:
 
     def running_count(self) -> int:
         return sum(1 for task in self.store.tasks.values() if task.phase == "Running")
+
+    def serving_count(self) -> int:
+        """Running tasks whose node is actually ready: no ghosts counted."""
+        return sum(
+            1
+            for task in self.store.tasks.values()
+            if task.phase == "Running"
+            and task.node is not None
+            and self.store.nodes.get(task.node) is not None
+            and self.store.nodes[task.node].ready
+        )
 
     def tick(self) -> None:
         for name in self.store.nodes:
@@ -86,6 +98,7 @@ class Sim:
                 self.store.remove_node(name)
         self.keeper.tick(self.store, self.now)
         self.availability.append(self.running_count())
+        self.serving_history.append(self.serving_count())
         self.now += 1
 
     def run(self, ticks: int) -> None:
@@ -94,3 +107,6 @@ class Sim:
 
     def worst_availability(self, since: int = 0) -> int:
         return min(self.availability[since:], default=0)
+
+    def worst_serving(self, since: int = 0) -> int:
+        return min(self.serving_history[since:], default=0)

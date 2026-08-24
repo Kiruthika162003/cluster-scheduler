@@ -5,6 +5,7 @@ import pytest
 from fleet.trials import (
     canaryevidence,
     cascade,
+    chaosfloor,
     drainfloor,
     fragmentation,
     ganghostages,
@@ -46,6 +47,7 @@ class TestEveryTrial:
             slivers,
             warmupdebt,
             packing,
+            chaosfloor,
         ],
     )
     def test_the_trial_holds(self, trial):
