@@ -11,6 +11,7 @@ TRIALS = (
     "fleet.trials.ghosts",
     "fleet.trials.cascade",
     "fleet.trials.oscillation",
+    "fleet.trials.drainfloor",
 )
 
 

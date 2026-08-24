@@ -2,7 +2,7 @@ from __future__ import annotations
 
 import pytest
 
-from fleet.trials import cascade, fragmentation, ghosts, oscillation
+from fleet.trials import cascade, drainfloor, fragmentation, ghosts, oscillation
 from fleet.trials.registry import TRIALS, all_verdicts, broken, report
 from fleet.trials.verdict import Verdict
 
@@ -20,7 +20,7 @@ class TestVerdict:
 class TestEveryTrial:
     @pytest.mark.parametrize(
         "trial",
-        [fragmentation, ghosts, cascade, oscillation],
+        [fragmentation, ghosts, cascade, oscillation, drainfloor],
     )
     def test_the_trial_holds(self, trial):
         verdict = trial.run()
