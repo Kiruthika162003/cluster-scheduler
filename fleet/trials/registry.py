@@ -20,6 +20,7 @@ TRIALS = (
     "fleet.trials.warmupdebt",
     "fleet.trials.packing",
     "fleet.trials.chaosfloor",
+    "fleet.trials.moneybill",
 )
 
 

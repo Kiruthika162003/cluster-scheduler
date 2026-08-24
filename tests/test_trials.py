@@ -10,6 +10,7 @@ from fleet.trials import (
     fragmentation,
     ganghostages,
     ghosts,
+    moneybill,
     oscillation,
     overcommit,
     packing,
@@ -48,6 +49,7 @@ class TestEveryTrial:
             warmupdebt,
             packing,
             chaosfloor,
+            moneybill,
         ],
     )
     def test_the_trial_holds(self, trial):
