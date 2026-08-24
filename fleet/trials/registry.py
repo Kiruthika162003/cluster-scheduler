@@ -12,6 +12,7 @@ TRIALS = (
     "fleet.trials.cascade",
     "fleet.trials.oscillation",
     "fleet.trials.drainfloor",
+    "fleet.trials.rolloutpace",
 )
 
 
