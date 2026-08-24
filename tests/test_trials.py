@@ -12,6 +12,7 @@ from fleet.trials import (
     oscillation,
     overcommit,
     rolloutpace,
+    slivers,
 )
 from fleet.trials.registry import TRIALS, all_verdicts, broken, report
 from fleet.trials.verdict import Verdict
@@ -40,6 +41,7 @@ class TestEveryTrial:
             canaryevidence,
             overcommit,
             ganghostages,
+            slivers,
         ],
     )
     def test_the_trial_holds(self, trial):

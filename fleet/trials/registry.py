@@ -16,6 +16,7 @@ TRIALS = (
     "fleet.trials.canaryevidence",
     "fleet.trials.overcommit",
     "fleet.trials.ganghostages",
+    "fleet.trials.slivers",
 )
 
 
