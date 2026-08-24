@@ -9,6 +9,7 @@ from fleet.trials import (
     fragmentation,
     ghosts,
     oscillation,
+    overcommit,
     rolloutpace,
 )
 from fleet.trials.registry import TRIALS, all_verdicts, broken, report
@@ -36,6 +37,7 @@ class TestEveryTrial:
             drainfloor,
             rolloutpace,
             canaryevidence,
+            overcommit,
         ],
     )
     def test_the_trial_holds(self, trial):
