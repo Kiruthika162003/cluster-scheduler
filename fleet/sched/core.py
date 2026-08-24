@@ -19,6 +19,7 @@ from fleet.store import Store
 @dataclass
 class Scheduler:
     scorers: tuple = ()
+    filters: tuple = EVERY_FILTER
     placed: int = 0
     rejected: int = 0
     reasons_kept: dict[str, dict[str, str]] = field(default_factory=dict)
@@ -30,7 +31,7 @@ class Scheduler:
         reasons: dict[str, str] = {}
         for node in nodes:
             refusal = None
-            for check in EVERY_FILTER:
+            for check in self.filters:
                 refusal = check(task, node, active)
                 if refusal is not None:
                     break
