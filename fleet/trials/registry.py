@@ -18,6 +18,7 @@ TRIALS = (
     "fleet.trials.ganghostages",
     "fleet.trials.slivers",
     "fleet.trials.warmupdebt",
+    "fleet.trials.packing",
 )
 
 

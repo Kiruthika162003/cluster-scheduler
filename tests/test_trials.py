@@ -11,6 +11,7 @@ from fleet.trials import (
     ghosts,
     oscillation,
     overcommit,
+    packing,
     rolloutpace,
     slivers,
     warmupdebt,
@@ -44,6 +45,7 @@ class TestEveryTrial:
             ganghostages,
             slivers,
             warmupdebt,
+            packing,
         ],
     )
     def test_the_trial_holds(self, trial):
