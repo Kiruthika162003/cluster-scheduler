@@ -17,6 +17,7 @@ from fleet.trials import (
     packing,
     rolloutpace,
     slivers,
+    softstep,
     spotnotice,
     starvation,
     warmupdebt,
@@ -56,6 +57,7 @@ class TestEveryTrial:
             starvation,
             kernelwalk,
             spotnotice,
+            softstep,
         ],
     )
     def test_the_trial_holds(self, trial):

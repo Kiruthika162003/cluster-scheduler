@@ -24,6 +24,7 @@ TRIALS = (
     "fleet.trials.starvation",
     "fleet.trials.kernelwalk",
     "fleet.trials.spotnotice",
+    "fleet.trials.softstep",
 )
 
 
