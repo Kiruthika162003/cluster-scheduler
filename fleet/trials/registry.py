@@ -32,6 +32,7 @@ TRIALS = (
     "fleet.trials.balloonpay",
     "fleet.trials.twobills",
     "fleet.trials.wrongprobe",
+    "fleet.trials.scalerfight",
 )
 
 

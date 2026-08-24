@@ -20,6 +20,7 @@ from fleet.trials import (
     packing,
     rollbacklag,
     rolloutpace,
+    scalerfight,
     slivers,
     softstep,
     splitbrain,
@@ -72,6 +73,7 @@ class TestEveryTrial:
             balloonpay,
             twobills,
             wrongprobe,
+            scalerfight,
         ],
     )
     def test_the_trial_holds(self, trial):
