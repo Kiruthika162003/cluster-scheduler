@@ -27,6 +27,7 @@ from fleet.trials import (
     starvation,
     twobills,
     warmupdebt,
+    wrongprobe,
 )
 from fleet.trials.registry import TRIALS, all_verdicts, broken, report
 from fleet.trials.verdict import Verdict
@@ -70,6 +71,7 @@ class TestEveryTrial:
             filterorder,
             balloonpay,
             twobills,
+            wrongprobe,
         ],
     )
     def test_the_trial_holds(self, trial):

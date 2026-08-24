@@ -31,6 +31,7 @@ TRIALS = (
     "fleet.trials.filterorder",
     "fleet.trials.balloonpay",
     "fleet.trials.twobills",
+    "fleet.trials.wrongprobe",
 )
 
 
