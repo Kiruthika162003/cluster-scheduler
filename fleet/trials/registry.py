@@ -17,6 +17,7 @@ TRIALS = (
     "fleet.trials.overcommit",
     "fleet.trials.ganghostages",
     "fleet.trials.slivers",
+    "fleet.trials.warmupdebt",
 )
 
 

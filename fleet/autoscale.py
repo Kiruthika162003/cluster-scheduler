@@ -40,6 +40,7 @@ class ReplicaScaler:
 class NodeScaler:
     warmup: int = 5
     scale_down_after: int = 12
+    pipeline_aware: bool = False
     provisioning: dict[str, int] = field(default_factory=dict)
     empty_since: dict[str, int] = field(default_factory=dict)
     provisioned: int = 0
@@ -48,7 +49,7 @@ class NodeScaler:
     def observe_stuck(self, stuck: int, now: int) -> list[str]:
         """Order one node per call while anything is stuck; names returned
         when their warmup completes."""
-        if stuck > 0:
+        if stuck > 0 and not (self.pipeline_aware and self.provisioning):
             name = f"auto-{self.provisioned + len(self.provisioning)}"
             if name not in self.provisioning:
                 self.provisioning[name] = now + self.warmup

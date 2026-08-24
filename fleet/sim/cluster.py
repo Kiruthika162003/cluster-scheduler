@@ -12,6 +12,7 @@ from __future__ import annotations
 
 from dataclasses import dataclass, field
 
+from fleet.autoscale import NodeScaler
 from fleet.control.deploy import Deployer, DeploySpec
 from fleet.control.health import Keeper
 from fleet.control.nodes import Monitor
@@ -41,8 +42,13 @@ class Sim:
     deployer: Deployer = field(default_factory=Deployer)
     deploys: list[DeploySpec] = field(default_factory=list)
     script: Script = field(default_factory=Script)
+    node_scaler: NodeScaler | None = None
+    auto_node_shape: Resources = field(
+        default_factory=lambda: Resources(cpu=1000, memory=1000)
+    )
     now: int = 0
     availability: list[int] = field(default_factory=list)
+    stuck_history: list[int] = field(default_factory=list)
 
     def add_nodes(self, count: int, cpu: int = 1000, memory: int = 1000) -> None:
         for number in range(count):
@@ -60,7 +66,24 @@ class Sim:
         self.monitor.sweep(self.store, self.now)
         for spec in self.deploys:
             self.deployer.reconcile(self.store, spec)
-        self.scheduler.schedule_pending(self.store)
+        _, stuck = self.scheduler.schedule_pending(self.store)
+        self.stuck_history.append(stuck)
+        if self.node_scaler is not None:
+            for name in self.node_scaler.observe_stuck(stuck, self.now):
+                self.store.add_node(
+                    Node(name=name, capacity=self.auto_node_shape)
+                )
+                self.monitor.beat(self.store, name, self.now)
+            empty = [
+                node.name
+                for node in self.store.nodes.values()
+                if node.name.startswith("auto-")
+                and not any(
+                    task.node == node.name for task in self.store.active_tasks()
+                )
+            ]
+            for name in self.node_scaler.observe_empty(empty, self.now):
+                self.store.remove_node(name)
         self.keeper.tick(self.store, self.now)
         self.availability.append(self.running_count())
         self.now += 1

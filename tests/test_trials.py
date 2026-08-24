@@ -13,6 +13,7 @@ from fleet.trials import (
     overcommit,
     rolloutpace,
     slivers,
+    warmupdebt,
 )
 from fleet.trials.registry import TRIALS, all_verdicts, broken, report
 from fleet.trials.verdict import Verdict
@@ -42,6 +43,7 @@ class TestEveryTrial:
             overcommit,
             ganghostages,
             slivers,
+            warmupdebt,
         ],
     )
     def test_the_trial_holds(self, trial):

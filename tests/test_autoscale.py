@@ -70,3 +70,25 @@ class TestNodeScaler:
         scaler.observe_empty(["n0"], now=0)
         scaler.observe_empty([], now=5)
         assert scaler.observe_empty(["n0"], now=12) == []
+
+
+class TestPipelineAwareness:
+    def test_the_naive_scaler_orders_per_stuck_tick(self):
+        scaler = NodeScaler(warmup=5)
+        for now in range(3):
+            scaler.observe_stuck(4, now)
+        assert len(scaler.provisioning) == 3
+
+    def test_the_aware_scaler_orders_once_and_waits(self):
+        scaler = NodeScaler(warmup=5, pipeline_aware=True)
+        for now in range(3):
+            scaler.observe_stuck(4, now)
+        assert len(scaler.provisioning) == 1
+
+    def test_the_aware_scaler_orders_again_after_delivery(self):
+        scaler = NodeScaler(warmup=2, pipeline_aware=True)
+        scaler.observe_stuck(4, now=0)
+        arrived = scaler.observe_stuck(4, now=2)
+        assert arrived == ["auto-0"]
+        scaler.observe_stuck(4, now=3)
+        assert len(scaler.provisioning) == 1
