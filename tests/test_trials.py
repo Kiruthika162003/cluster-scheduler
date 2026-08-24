@@ -3,6 +3,7 @@ from __future__ import annotations
 import pytest
 
 from fleet.trials import (
+    canaryevidence,
     cascade,
     drainfloor,
     fragmentation,
@@ -27,7 +28,15 @@ class TestVerdict:
 class TestEveryTrial:
     @pytest.mark.parametrize(
         "trial",
-        [fragmentation, ghosts, cascade, oscillation, drainfloor, rolloutpace],
+        [
+            fragmentation,
+            ghosts,
+            cascade,
+            oscillation,
+            drainfloor,
+            rolloutpace,
+            canaryevidence,
+        ],
     )
     def test_the_trial_holds(self, trial):
         verdict = trial.run()

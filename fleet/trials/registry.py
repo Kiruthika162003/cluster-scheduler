@@ -13,6 +13,7 @@ TRIALS = (
     "fleet.trials.oscillation",
     "fleet.trials.drainfloor",
     "fleet.trials.rolloutpace",
+    "fleet.trials.canaryevidence",
 )
 
 
