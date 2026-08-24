@@ -7,6 +7,7 @@ from fleet.trials import (
     cascade,
     chaosfloor,
     drainfloor,
+    filterorder,
     fragmentation,
     ganghostages,
     ghosts,
@@ -64,6 +65,7 @@ class TestEveryTrial:
             noisyfair,
             splitbrain,
             rollbacklag,
+            filterorder,
         ],
     )
     def test_the_trial_holds(self, trial):

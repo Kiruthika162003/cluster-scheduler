@@ -28,6 +28,7 @@ TRIALS = (
     "fleet.trials.noisyfair",
     "fleet.trials.splitbrain",
     "fleet.trials.rollbacklag",
+    "fleet.trials.filterorder",
 )
 
 
