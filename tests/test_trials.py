@@ -7,6 +7,7 @@ from fleet.trials import (
     cascade,
     drainfloor,
     fragmentation,
+    ganghostages,
     ghosts,
     oscillation,
     overcommit,

@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from fleet.objects import Node, Resources
+from fleet.objects import Node, Resources, Task, TaskSpec
 from fleet.sched.core import Scheduler
 from fleet.sched.gang import Gang, GangScheduler, hostages, naive_admit
 from fleet.store import Store
@@ -65,8 +65,6 @@ class TestHostages:
         assert hostages(store) == {}
 
     def test_ungrouped_tasks_are_ignored(self):
-        from fleet.objects import Task, TaskSpec
-
         store = cluster()
         loner = Task(spec=TaskSpec(name="x", needs=Resources(cpu=1, memory=1)))
         loner.bound_to("n0")
