@@ -56,6 +56,9 @@ ignore = [
 
 [tool.ruff.lint.per-file-ignores]
 "tests/*" = ["PLR0915", "ARG002"]
+# Filters and scorers share one calling convention; unused halves are the contract.
+"fleet/sched/filters.py" = ["ARG001"]
+"fleet/sched/scorers.py" = ["ARG001"]
 
 [tool.ruff.format]
 quote-style = "double"
