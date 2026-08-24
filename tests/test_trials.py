@@ -19,6 +19,7 @@ from fleet.trials import (
     rolloutpace,
     slivers,
     softstep,
+    splitbrain,
     spotnotice,
     starvation,
     warmupdebt,
@@ -60,6 +61,7 @@ class TestEveryTrial:
             spotnotice,
             softstep,
             noisyfair,
+            splitbrain,
         ],
     )
     def test_the_trial_holds(self, trial):

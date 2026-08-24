@@ -26,6 +26,7 @@ TRIALS = (
     "fleet.trials.spotnotice",
     "fleet.trials.softstep",
     "fleet.trials.noisyfair",
+    "fleet.trials.splitbrain",
 )
 
 
