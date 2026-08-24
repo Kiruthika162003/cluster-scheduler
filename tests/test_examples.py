@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from examples import incident, launchday, multiteam, upgrade
+from examples import incident, launchday, multiteam, simweek, upgrade
 
 
 class TestIncident:
@@ -27,6 +27,16 @@ class TestMultiteam:
         assert "refused ads/greedy" in out and "900m" in out
         assert "admitted search/tiny at 50m" in out
         assert "headroom" in out and "refusals 1" in out
+
+
+class TestSimweek:
+    def test_the_week_ends_whole_and_clean(self, capsys):
+        assert simweek.main() == 0
+        out = capsys.readouterr().out
+        assert "day 6: running 14, serving 14" in out
+        assert "invariants broken 0" in out
+        assert "monitor_evictions_total 2" in out
+        assert out.count("invariants broken 0") == 7
 
 
 class TestUpgrade:
