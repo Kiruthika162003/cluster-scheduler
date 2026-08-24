@@ -2,7 +2,7 @@ from __future__ import annotations
 
 from fleet.control.budget import Budget, Guard
 from fleet.control.deploy import DeploySpec
-from fleet.objects import Node, Resources, TaskSpec
+from fleet.objects import Node, Resources, Task, TaskSpec
 from fleet.sched.core import Scheduler
 from fleet.sched.filters import is_ready
 from fleet.sim.cluster import Sim
@@ -45,8 +45,6 @@ class TestCordon:
     def test_a_cordoned_node_refuses_new_tasks(self):
         node = Node(name="n", capacity=Resources(cpu=1000, memory=1000))
         node.schedulable = False
-        from fleet.objects import Task
-
         task = Task(spec=TaskSpec(name="t", needs=Resources(cpu=1, memory=1)))
         assert is_ready(task, node, []) == "node cordoned"
 
@@ -60,8 +58,6 @@ class TestCordon:
         store.add_node(Node(name="n0", capacity=Resources(cpu=1000, memory=1000)))
         store.get_node("n0").schedulable = False
         store.add_node(Node(name="n1", capacity=Resources(cpu=1000, memory=1000)))
-        from fleet.objects import Task
-
         task = Task(spec=TaskSpec(name="t", needs=Resources(cpu=100, memory=100)))
         store.add_task(task)
         Scheduler().schedule(store, task)
