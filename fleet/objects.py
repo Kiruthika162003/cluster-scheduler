@@ -92,6 +92,7 @@ class Node:
     labels: dict[str, str] = field(default_factory=dict)
     taints: tuple[Taint, ...] = ()
     ready: bool = True
+    schedulable: bool = True
     last_heartbeat: int = 0
 
     def __post_init__(self) -> None:

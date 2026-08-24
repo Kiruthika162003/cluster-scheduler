@@ -25,6 +25,8 @@ def fits(task: Task, node: Node, active: list[Task]) -> str | None:
 def is_ready(task: Task, node: Node, active: list[Task]) -> str | None:
     if not node.ready:
         return "node not ready"
+    if not node.schedulable:
+        return "node cordoned"
     return None
 
 

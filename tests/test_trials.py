@@ -10,6 +10,7 @@ from fleet.trials import (
     fragmentation,
     ganghostages,
     ghosts,
+    kernelwalk,
     moneybill,
     oscillation,
     overcommit,
@@ -52,6 +53,7 @@ class TestEveryTrial:
             chaosfloor,
             moneybill,
             starvation,
+            kernelwalk,
         ],
     )
     def test_the_trial_holds(self, trial):

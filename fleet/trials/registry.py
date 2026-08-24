@@ -22,6 +22,7 @@ TRIALS = (
     "fleet.trials.chaosfloor",
     "fleet.trials.moneybill",
     "fleet.trials.starvation",
+    "fleet.trials.kernelwalk",
 )
 
 
