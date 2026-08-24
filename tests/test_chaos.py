@@ -60,3 +60,34 @@ class TestChaos:
         chaos = Chaos()
         chaos.campaign(seeds=4)
         assert all(report.silences for report in chaos.reports)
+
+
+class TestProbeScripting:
+    def test_scripted_probes_reach_the_keeper(self):
+        sim = Sim(script=Script(failing_probes={"web-0": frozenset({0, 1})}))
+        sim.add_nodes(1)
+        sim.deploys.append(
+            DeploySpec(
+                name="web",
+                replicas=1,
+                template=TaskSpec(name="tpl", needs=Resources(cpu=100, memory=100)),
+            )
+        )
+        sim.wire_probes()
+        sim.run(20)
+        assert sim.keeper.restarts == 2
+        assert sim.store.get_task("web-0").phase == "Running"
+
+    def test_unscripted_probes_pass_immediately(self):
+        sim = Sim()
+        sim.add_nodes(1)
+        sim.deploys.append(
+            DeploySpec(
+                name="web",
+                replicas=1,
+                template=TaskSpec(name="tpl", needs=Resources(cpu=100, memory=100)),
+            )
+        )
+        sim.wire_probes()
+        sim.run(3)
+        assert sim.keeper.restarts == 0

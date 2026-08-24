@@ -14,7 +14,7 @@ from dataclasses import dataclass, field
 
 from fleet.autoscale import NodeScaler
 from fleet.control.deploy import Deployer, DeploySpec
-from fleet.control.health import Keeper
+from fleet.control.health import Keeper, Probe
 from fleet.control.nodes import Monitor
 from fleet.objects import Node, Resources
 from fleet.sched.core import Scheduler
@@ -24,9 +24,10 @@ from fleet.store import Store
 
 @dataclass
 class Script:
-    """Ticks during which each named node is silent."""
+    """Ticks during which each named node is silent, and probes that fail."""
 
     silences: dict[str, tuple[int, int]] = field(default_factory=dict)
+    failing_probes: dict[str, frozenset[int]] = field(default_factory=dict)
 
     def is_silent(self, node_name: str, now: int) -> bool:
         window = self.silences.get(node_name)
@@ -70,6 +71,10 @@ class Sim:
             and self.store.nodes.get(task.node) is not None
             and self.store.nodes[task.node].ready
         )
+
+    def wire_probes(self) -> None:
+        for name, failures in self.script.failing_probes.items():
+            self.keeper.probes[name] = Probe(failing_attempts=failures)
 
     def tick(self) -> None:
         for name in self.store.nodes:
