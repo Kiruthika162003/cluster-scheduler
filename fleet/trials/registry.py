@@ -15,6 +15,7 @@ TRIALS = (
     "fleet.trials.rolloutpace",
     "fleet.trials.canaryevidence",
     "fleet.trials.overcommit",
+    "fleet.trials.ganghostages",
 )
 
 

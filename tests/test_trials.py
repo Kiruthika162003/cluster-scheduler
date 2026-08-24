@@ -38,6 +38,7 @@ class TestEveryTrial:
             rolloutpace,
             canaryevidence,
             overcommit,
+            ganghostages,
         ],
     )
     def test_the_trial_holds(self, trial):
