@@ -12,6 +12,7 @@ from fleet.trials import (
     ghosts,
     kernelwalk,
     moneybill,
+    noisyfair,
     oscillation,
     overcommit,
     packing,
@@ -58,6 +59,7 @@ class TestEveryTrial:
             kernelwalk,
             spotnotice,
             softstep,
+            noisyfair,
         ],
     )
     def test_the_trial_holds(self, trial):
