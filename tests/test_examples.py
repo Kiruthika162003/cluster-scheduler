@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from examples import incident, launchday, upgrade
+from examples import incident, launchday, multiteam, upgrade
 
 
 class TestIncident:
@@ -18,6 +18,15 @@ class TestLaunchday:
         out = capsys.readouterr().out
         assert "peak 25 replicas" in out
         assert "dominant share 0.669" in out and "dominant share 0.664" in out
+
+
+class TestMultiteam:
+    def test_the_two_teams_settle_where_the_quotas_say(self, capsys):
+        assert multiteam.main() == 0
+        out = capsys.readouterr().out
+        assert "refused ads/greedy" in out and "900m" in out
+        assert "admitted search/tiny at 50m" in out
+        assert "headroom" in out and "refusals 1" in out
 
 
 class TestUpgrade:
