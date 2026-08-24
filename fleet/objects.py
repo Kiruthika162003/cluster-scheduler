@@ -50,6 +50,7 @@ class Taint:
 class TaskSpec:
     name: str
     needs: Resources
+    namespace: str = "default"
     labels: tuple[tuple[str, str], ...] = ()
     selector: tuple[tuple[str, str], ...] = ()
     tolerates: tuple[str, ...] = ()
