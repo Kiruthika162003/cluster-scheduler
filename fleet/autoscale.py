@@ -21,11 +21,15 @@ class ReplicaScaler:
     floor: int
     ceiling: int
     step_limit: int = 4
+    tolerance: int = 0
     decisions: list[tuple[int, int]] = field(default_factory=list)
 
     def wanted(self, current: int, load: float) -> int:
         raw = load / (PER_REPLICA * TARGET)
         target = max(self.floor, min(self.ceiling, round(raw + 0.5)))
+        if abs(target - current) <= self.tolerance:
+            self.decisions.append((current, current))
+            return current
         step = max(-self.step_limit, min(self.step_limit, target - current))
         chosen = current + step
         self.decisions.append((current, chosen))
