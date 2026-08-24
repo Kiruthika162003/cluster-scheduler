@@ -23,6 +23,7 @@ TRIALS = (
     "fleet.trials.moneybill",
     "fleet.trials.starvation",
     "fleet.trials.kernelwalk",
+    "fleet.trials.spotnotice",
 )
 
 
