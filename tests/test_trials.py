@@ -3,6 +3,7 @@ from __future__ import annotations
 import pytest
 
 from fleet.trials import (
+    balloonpay,
     canaryevidence,
     cascade,
     chaosfloor,
@@ -66,6 +67,7 @@ class TestEveryTrial:
             splitbrain,
             rollbacklag,
             filterorder,
+            balloonpay,
         ],
     )
     def test_the_trial_holds(self, trial):

@@ -29,6 +29,7 @@ TRIALS = (
     "fleet.trials.splitbrain",
     "fleet.trials.rollbacklag",
     "fleet.trials.filterorder",
+    "fleet.trials.balloonpay",
 )
 
 
