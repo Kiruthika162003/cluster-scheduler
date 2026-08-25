@@ -59,6 +59,9 @@ ignore = [
 # Filters and scorers share one calling convention; unused halves are the contract.
 "fleet/sched/filters.py" = ["ARG001"]
 "fleet/sched/scorers.py" = ["ARG001"]
+# The second wave imports Check from the first; importing the second wave at
+# module top would close the circle, so the run() import stays local.
+"fleet/conformance.py" = ["PLC0415"]
 
 [tool.ruff.format]
 quote-style = "double"

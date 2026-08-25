@@ -199,7 +199,9 @@ class Conformance:
     results: list[Check] = field(default_factory=list)
 
     def run(self) -> list[Check]:
-        self.results = [check() for check in EVERY_CHECK]
+        from fleet.conformance2 import SECOND_WAVE
+
+        self.results = [check() for check in (*EVERY_CHECK, *SECOND_WAVE)]
         return self.results
 
     def failing(self) -> list[Check]:
