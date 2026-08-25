@@ -6,7 +6,7 @@ from fleet.errors import Unschedulable
 from fleet.objects import Node, Resources, Taint, Task, TaskSpec
 from fleet.sched.core import Scheduler
 from fleet.sched.filters import fits, repelled_by_peers, tolerates_taints
-from fleet.sched.scorers import binpack, peer_spread, spread
+from fleet.sched.scorers import attracted_to, attracted_to_partner, binpack, peer_spread, spread
 from fleet.store import Store
 
 
@@ -126,3 +126,45 @@ class TestScheduler:
         sched.schedule_pending(store)
         assert sched.placed == 1 and sched.rejected == 1
         assert "no" in sched.reasons_kept
+
+
+class TestAttraction:
+    def test_the_partner_scorer_reads_the_movers_own_pair(self):
+        store = Store()
+        for name in ("n0", "n1"):
+            store.add_node(node(name))
+        cache = task("cache-0", labels=(("pair", "0"),))
+        cache.bound_to("n0")
+        store.add_task(cache)
+        other = task("cache-1", labels=(("pair", "1"),))
+        other.bound_to("n1")
+        store.add_task(other)
+        score = attracted_to_partner("pair")
+        mover = task("front-0", labels=(("pair", "0"),))
+        active = store.active_tasks()
+        assert score(mover, store.get_node("n0"), active) == 1.0
+        assert score(mover, store.get_node("n1"), active) == 0.0
+
+    def test_a_task_is_not_its_own_partner(self):
+        store = Store()
+        store.add_node(node("n0"))
+        me = task("front-0", labels=(("pair", "0"),))
+        me.bound_to("n0")
+        store.add_task(me)
+        score = attracted_to_partner("pair")
+        assert score(me, store.get_node("n0"), store.active_tasks()) == 0.0
+
+    def test_unpaired_tasks_feel_no_pull(self):
+        store = Store()
+        store.add_node(node("n0"))
+        score = attracted_to_partner("pair")
+        assert score(task("loner"), store.get_node("n0"), []) == 0.0
+
+    def test_the_constant_variant_pulls_toward_the_label(self):
+        store = Store()
+        store.add_node(node("n0"))
+        cache = task("cache", labels=(("role", "cache"),))
+        cache.bound_to("n0")
+        store.add_task(cache)
+        score = attracted_to("role", "cache", weight=2.0)
+        assert score(task("x"), store.get_node("n0"), store.active_tasks()) == 2.0

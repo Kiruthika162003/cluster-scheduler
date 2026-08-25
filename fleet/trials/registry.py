@@ -34,6 +34,7 @@ TRIALS = (
     "fleet.trials.wrongprobe",
     "fleet.trials.scalerfight",
     "fleet.trials.datagravity",
+    "fleet.trials.chattyhops",
 )
 
 

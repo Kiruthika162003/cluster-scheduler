@@ -37,3 +37,43 @@ def peer_spread(task: Task, node: Node, active: list[Task]) -> float:
         if other.node == node.name and other.spec.label_map().get("app") == mine
     )
     return 1.0 / (1 + peers)
+
+
+def attracted_to(label_key: str, label_value: str, weight: float = 1.0):
+    """A scorer drawn toward nodes holding tasks with the given label."""
+
+    def score(task: Task, node: Node, active: list[Task]) -> float:
+        del task
+        drawn = sum(
+            1
+            for other in active
+            if other.node == node.name
+            and other.spec.label_map().get(label_key) == label_value
+        )
+        return weight * drawn
+
+    return score
+
+
+def attracted_to_partner(pair_key: str, weight: float = 1.0):
+    """Drawn toward nodes holding tasks sharing this task's pair label.
+
+    The constant-label variant above pulls everyone toward the same
+    crowd; this one reads the moving task's own pair value, which is
+    what co-locating actual partners requires.
+    """
+
+    def score(task: Task, node: Node, active: list[Task]) -> float:
+        mine = task.spec.label_map().get(pair_key)
+        if mine is None:
+            return 0.0
+        drawn = sum(
+            1
+            for other in active
+            if other.node == node.name
+            and other.spec.name != task.spec.name
+            and other.spec.label_map().get(pair_key) == mine
+        )
+        return weight * drawn
+
+    return score
