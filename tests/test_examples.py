@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from examples import incident, launchday, multiteam, simweek, upgrade
+from examples import batchnight, incident, launchday, multiteam, simweek, upgrade
 
 
 class TestIncident:
@@ -27,6 +27,15 @@ class TestMultiteam:
         assert "refused ads/greedy" in out and "900m" in out
         assert "admitted search/tiny at 50m" in out
         assert "headroom" in out and "refusals 1" in out
+
+
+class TestBatchnight:
+    def test_three_nights_all_finish_with_the_flakes_retried(self, capsys):
+        assert batchnight.main() == 0
+        out = capsys.readouterr().out
+        assert "rebuild-run0 done at tick 4" in out
+        assert "rebuild-run2 done at tick 204" in out
+        assert "launched 24 tasks for 18 completions, retried 6" in out
 
 
 class TestSimweek:
