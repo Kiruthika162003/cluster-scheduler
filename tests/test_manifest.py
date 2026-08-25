@@ -4,7 +4,7 @@ import pytest
 
 from fleet.control.deploy import Deployer
 from fleet.errors import Invalid
-from fleet.manifest import Applier, Manifest, parse
+from fleet.manifest import Applier, Manifest, gates_from, parse
 from fleet.store import Store
 
 
@@ -114,3 +114,22 @@ class TestApply:
         planned = applier.plan(parse(data()))
         applied = applier.apply(parse(data()), store, Deployer())
         assert planned.lines() == applied.lines()
+
+
+class TestGates:
+    def test_the_gates_project_the_manifest(self):
+        manifest = parse(data())
+        admission, guard = gates_from(manifest)
+        assert "team-a" in admission.quotas
+        assert guard.budgets[0].name == "floor"
+
+    def test_the_gates_are_fresh_on_every_call(self):
+        manifest = parse(data())
+        first_admission, first_guard = gates_from(manifest)
+        second_admission, second_guard = gates_from(manifest)
+        assert first_admission is not second_admission
+        assert first_guard is not second_guard
+
+    def test_an_empty_manifest_projects_empty_gates(self):
+        admission, guard = gates_from(Manifest())
+        assert admission.quotas == {} and guard.budgets == []

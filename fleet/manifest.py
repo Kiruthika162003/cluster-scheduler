@@ -12,9 +12,9 @@ from __future__ import annotations
 
 from dataclasses import dataclass, field
 
-from fleet.control.budget import Budget
+from fleet.control.budget import Budget, Guard
 from fleet.control.deploy import DeploySpec
-from fleet.control.nsquota import NamespaceQuota
+from fleet.control.nsquota import Admission, NamespaceQuota
 from fleet.errors import Invalid
 from fleet.objects import Resources, TaskSpec
 
@@ -143,3 +143,15 @@ class Applier:
             deployer.reconcile(store, spec)
         self.applies += 1
         return made
+
+def gates_from(manifest: Manifest):
+    """The admission gate and budget guard the manifest describes.
+
+    Quotas become an Admission, budgets become a Guard, and both are
+    fresh objects: the manifest is the source of truth and the gates are
+    disposable projections of it, rebuilt on every apply rather than
+    patched, because patching projections is how they drift.
+    """
+    admission = Admission(quotas={quota.namespace: quota for quota in manifest.quotas})
+    guard = Guard(budgets=list(manifest.budgets))
+    return admission, guard
