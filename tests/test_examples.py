@@ -4,6 +4,7 @@ from examples import (
     batchnight,
     blackfriday,
     execmonthly,
+    fullday,
     gameday,
     incident,
     launchday,
@@ -34,6 +35,16 @@ class TestExecMonthly:
         assert "platform-idle 20304.0" in out
         assert "ml: up 350%, 8000 to 36000" in out
         assert "ml: +133% of the move" in out
+
+
+class TestFullDay:
+    def test_the_day_reads_end_to_end(self, capsys):
+        assert fullday.main() == 0
+        out = capsys.readouterr().out
+        assert "morning: 6 tasks running across 4 nodes" in out
+        assert "paging meera of storefront" in out
+        assert "batch pipeline done, order extract, transform, load" in out
+        assert "one node retired at noon, capacity is tighter" in out
 
 
 class TestGameday:
