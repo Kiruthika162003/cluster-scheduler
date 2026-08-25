@@ -8,9 +8,10 @@ shoulder past the peak, 1600 grams each, 11200 for the week. The
 shifter did better: a 12-tick deadline reaches past midnight into
 the NEXT morning's 0.2-gram trough, saving 2240 per job, except the
 week's last job, which has no morning after it inside the calendar
-and settles for the shoulder's 1600; the week saves 15040. Tightening the deadline to 4 ticks
-removes every choice: the job runs inside the peak it arrived in and
-the saving is exactly zero, which is the honest price of urgency.
+and settles for the shoulder's 1600; the week saves 15040.
+Tightening the deadline to 4 ticks removes every choice: the job
+runs inside the peak it arrived in and the saving is exactly zero,
+which is the honest price of urgency.
 """
 
 from __future__ import annotations
