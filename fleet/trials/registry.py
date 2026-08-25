@@ -41,6 +41,7 @@ TRIALS = (
     "fleet.trials.coldpull",
     "fleet.trials.twochoices",
     "fleet.trials.longhaul",
+    "fleet.trials.fairqueue",
 )
 
 

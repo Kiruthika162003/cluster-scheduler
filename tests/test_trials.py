@@ -11,6 +11,7 @@ from fleet.trials import (
     coldpull,
     datagravity,
     drainfloor,
+    fairqueue,
     filterorder,
     fragmentation,
     ganghostages,
@@ -61,6 +62,7 @@ class TestEveryTrial:
             cascade,
             oscillation,
             drainfloor,
+    fairqueue,
             rolloutpace,
             canaryevidence,
             overcommit,
@@ -92,6 +94,7 @@ class TestEveryTrial:
             coldpull,
             twochoices,
             longhaul,
+            fairqueue,
         ],
     )
     def test_the_trial_holds(self, trial):

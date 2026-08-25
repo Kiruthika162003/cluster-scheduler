@@ -39,7 +39,7 @@ class Engine:
 
     def submit(self, store: Store, task: Task) -> None:
         store.add_task(task)
-        self.queue.offer(task.spec.name, task.spec.priority)
+        self.queue.offer(task.spec.name, task.spec.priority, task.spec.namespace)
 
     def _may_preempt_for(self, store: Store, task: Task) -> bool:
         mover = class_of(task.spec.priority)
@@ -98,7 +98,7 @@ class Engine:
                     generation = victim.generation
                     victim.phase = "Pending"
                     store.update_task(victim, read_generation=generation)
-                    self.queue.offer(victim_name, victim.spec.priority)
+                    self.queue.offer(victim_name, victim.spec.priority, victim.spec.namespace)
                     self.displaced += 1
                     self.journal.note(
                         now, "engine", victim_name, "displace",

@@ -103,3 +103,33 @@ class TestAging:
             queue.ready(now)
         queue.offer("fresh", 2)
         assert queue.ready(now=20)[0] == "fresh"
+
+
+class TestNamespaceWeights:
+    def test_unweighted_ties_stay_alphabetical(self):
+        queue = SchedulingQueue()
+        queue.offer("s0", 100, namespace="search")
+        queue.offer("a0", 100, namespace="ads")
+        assert queue.ready(now=0) == ["a0", "s0"]
+
+    def test_weights_deal_the_tied_band(self):
+        queue = SchedulingQueue(namespace_weights={"search": 2, "ads": 1})
+        for number in range(4):
+            queue.offer(f"s{number}", 100, namespace="search")
+            queue.offer(f"a{number}", 100, namespace="ads")
+        told = queue.ready(now=0)
+        assert told[:6] == ["a0", "s0", "s1", "a1", "s2", "s3"]
+
+    def test_priority_still_beats_weight(self):
+        queue = SchedulingQueue(namespace_weights={"search": 5})
+        queue.offer("humble", 100, namespace="search")
+        queue.offer("urgent", 1000, namespace="ads")
+        assert queue.ready(now=0)[0] == "urgent"
+
+    def test_an_unlisted_namespace_gets_weight_one(self):
+        queue = SchedulingQueue(namespace_weights={"search": 2})
+        for number in range(2):
+            queue.offer(f"s{number}", 100, namespace="search")
+            queue.offer(f"x{number}", 100, namespace="mystery")
+        told = queue.ready(now=0)
+        assert told[:3] == ["x0", "s0", "s1"]
