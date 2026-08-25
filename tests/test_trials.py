@@ -20,6 +20,7 @@ from fleet.trials import (
     kernelwalk,
     longhaul,
     moneybill,
+    nightshift,
     noisyfair,
     oldiron,
     oscillation,
@@ -107,6 +108,7 @@ class TestEveryTrial:
             churnbudget,
             shadowdiff,
             robotstop,
+            nightshift,
         ],
     )
     def test_the_trial_holds(self, trial):

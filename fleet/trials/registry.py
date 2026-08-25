@@ -47,6 +47,7 @@ TRIALS = (
     "fleet.trials.churnbudget",
     "fleet.trials.shadowdiff",
     "fleet.trials.robotstop",
+    "fleet.trials.nightshift",
 )
 
 
