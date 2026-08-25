@@ -24,6 +24,7 @@ from fleet.trials import (
     oscillation,
     overcommit,
     packing,
+    reboot,
     rollbacklag,
     rolloutpace,
     scalerfight,
@@ -70,6 +71,7 @@ class TestEveryTrial:
             slivers,
             warmupdebt,
             packing,
+    reboot,
             chaosfloor,
             moneybill,
             starvation,
@@ -95,6 +97,7 @@ class TestEveryTrial:
             twochoices,
             longhaul,
             fairqueue,
+            reboot,
         ],
     )
     def test_the_trial_holds(self, trial):
