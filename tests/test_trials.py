@@ -26,6 +26,7 @@ from fleet.trials import (
     oscillation,
     overcommit,
     packing,
+    promisekeeper,
     reboot,
     robotstop,
     rollbacklag,
@@ -109,6 +110,7 @@ class TestEveryTrial:
             shadowdiff,
             robotstop,
             nightshift,
+            promisekeeper,
         ],
     )
     def test_the_trial_holds(self, trial):

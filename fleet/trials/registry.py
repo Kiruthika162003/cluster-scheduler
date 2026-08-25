@@ -48,6 +48,7 @@ TRIALS = (
     "fleet.trials.shadowdiff",
     "fleet.trials.robotstop",
     "fleet.trials.nightshift",
+    "fleet.trials.promisekeeper",
 )
 
 
