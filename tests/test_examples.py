@@ -2,6 +2,7 @@ from __future__ import annotations
 
 from examples import (
     batchnight,
+    blackfriday,
     gameday,
     incident,
     launchday,
@@ -11,6 +12,15 @@ from examples import (
     storefront,
     upgrade,
 )
+
+
+class TestBlackFriday:
+    def test_the_surge_lands_and_the_balloon_pays(self, capsys):
+        assert blackfriday.main() == 0
+        out = capsys.readouterr().out
+        assert "no, only 1800m after bookings" in out
+        assert "checkout surge running at tick 50, balloons popped 1" in out
+        assert "batch finished 2 of 2" in out
 
 
 class TestGameday:

@@ -57,6 +57,8 @@ class WorkTracker:
     def advance(self, store: Store) -> None:
         for task in store.tasks.values():
             name = task.spec.name
+            if name not in self.needed:
+                continue
             if task.phase != "Running" or name in self.finished:
                 continue
             self.progress[name] = self.progress.get(name, 0) + 1
