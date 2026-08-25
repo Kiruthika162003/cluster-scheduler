@@ -43,6 +43,7 @@ TRIALS = (
     "fleet.trials.longhaul",
     "fleet.trials.fairqueue",
     "fleet.trials.reboot",
+    "fleet.trials.zoneloss",
 )
 
 

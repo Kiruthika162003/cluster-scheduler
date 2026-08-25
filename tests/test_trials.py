@@ -39,6 +39,7 @@ from fleet.trials import (
     twochoices,
     warmupdebt,
     wrongprobe,
+    zoneloss,
 )
 from fleet.trials.registry import TRIALS, all_verdicts, broken, report
 from fleet.trials.verdict import Verdict
@@ -70,6 +71,7 @@ class TestEveryTrial:
             ganghostages,
             slivers,
             warmupdebt,
+    zoneloss,
             packing,
     reboot,
             chaosfloor,
@@ -98,6 +100,7 @@ class TestEveryTrial:
             longhaul,
             fairqueue,
             reboot,
+            zoneloss,
         ],
     )
     def test_the_trial_holds(self, trial):
