@@ -29,8 +29,48 @@ class Probe:
 
 
 @dataclass
+class StartupGate:
+    """Liveness is suspended until the task first comes up, within a budget.
+
+    The gate answers one question per task: has it ever been up. Until
+    then, liveness failures are absorbed against the startup budget; a
+    task that exhausts the budget without ever coming up is declared
+    Failed outright rather than crashlooped, because a service that has
+    never once started is not sick, it is broken.
+    """
+
+    budget: int
+    absorbed: dict[str, int] = None
+    started: set[str] = None
+    broken: set[str] = None
+
+    def __post_init__(self) -> None:
+        if self.absorbed is None:
+            self.absorbed = {}
+        if self.started is None:
+            self.started = set()
+        if self.broken is None:
+            self.broken = set()
+
+    def admit_failure(self, task_name: str) -> str:
+        """Returns absorb, or broken when the budget is spent."""
+        if task_name in self.started:
+            return "restart"
+        spent = self.absorbed.get(task_name, 0) + 1
+        self.absorbed[task_name] = spent
+        if spent >= self.budget:
+            self.broken.add(task_name)
+            return "broken"
+        return "absorb"
+
+    def note_up(self, task_name: str) -> None:
+        self.started.add(task_name)
+
+
+@dataclass
 class Keeper:
     probes: dict[str, Probe] = field(default_factory=dict)
+    startup_gate: StartupGate | None = None
     waiting_until: dict[str, int] = field(default_factory=dict)
     last_healthy: dict[str, int] = field(default_factory=dict)
     restarts: int = 0
@@ -51,6 +91,20 @@ class Keeper:
                 if probe.up(task.restarts):
                     task.phase = "Running"
                     self.last_healthy[name] = now
+                    if self.startup_gate is not None:
+                        self.startup_gate.note_up(name)
+                elif self.startup_gate is not None:
+                    ruling = self.startup_gate.admit_failure(name)
+                    if ruling == "broken":
+                        task.phase = "Failed"
+                    elif ruling == "restart":
+                        task.restarts += 1
+                        self.restarts += 1
+                        self.waiting_until[name] = now + self.backoff_for(
+                            task.restarts
+                        )
+                    else:
+                        task.restarts += 1
                 else:
                     task.restarts += 1
                     self.restarts += 1

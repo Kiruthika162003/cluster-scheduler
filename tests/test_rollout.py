@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 from fleet.control.budget import Budget, Guard
-from fleet.control.health import BACKOFF_CAP, FORGIVE_AFTER, Keeper, Probe
+from fleet.control.health import BACKOFF_CAP, FORGIVE_AFTER, Keeper, Probe, StartupGate
 from fleet.objects import Resources, Task, TaskSpec
 from fleet.roll.rolling import Roller, Rollout
 from fleet.store import Store
@@ -145,3 +145,46 @@ class TestKeeper:
         for now in range(FORGIVE_AFTER):
             keeper.tick(store, now)
         assert store.get_task("t").restarts == 1
+
+
+class TestStartupGate:
+    def gated_store(self, failures: frozenset) -> tuple:
+        store = Store()
+        task = Task(spec=TaskSpec(name="t", needs=Resources(cpu=1, memory=1)))
+        task.bound_to("n0")
+        store.add_task(task)
+        gate = StartupGate(budget=10)
+        keeper = Keeper(
+            probes={"t": Probe(failing_attempts=failures)}, startup_gate=gate
+        )
+        return store, keeper, gate
+
+    def test_a_slow_starter_is_absorbed_not_restarted(self):
+        store, keeper, gate = self.gated_store(frozenset(range(8)))
+        for now in range(12):
+            keeper.tick(store, now)
+        assert store.get_task("t").phase == "Running"
+        assert keeper.restarts == 0
+        assert gate.absorbed["t"] == 8
+
+    def test_a_never_starter_is_declared_broken(self):
+        store, keeper, gate = self.gated_store(frozenset(range(100)))
+        for now in range(15):
+            keeper.tick(store, now)
+        assert store.get_task("t").phase == "Failed"
+        assert "t" in gate.broken
+        assert keeper.restarts == 0
+
+    def test_after_first_up_liveness_rules_again(self):
+        store, keeper, gate = self.gated_store(frozenset())
+        keeper.tick(store, 0)
+        assert store.get_task("t").phase == "Running"
+        assert "t" in gate.started
+        held = store.get_task("t")
+        generation = held.generation
+        held.phase = "Bound"
+        store.update_task(held, read_generation=generation)
+        keeper.probes["t"] = Probe(failing_attempts=frozenset(range(100)))
+        keeper.tick(store, 1)
+        assert keeper.restarts == 1
+        assert store.get_task("t").phase == "Bound"
