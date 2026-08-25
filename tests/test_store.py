@@ -97,3 +97,50 @@ class TestEvents:
         store.add_task(task("b"))
         assert [e.name for e in store.since(1)] == ["b"]
         assert store.since(2) == []
+
+
+class TestBatchUpdate:
+    def test_a_clean_batch_applies_every_update(self):
+        store = Store()
+        store.add_task(task("a"))
+        store.add_task(task("b"))
+        first = store.get_task("a")
+        second = store.get_task("b")
+        first.phase = "Bound"
+        second.phase = "Bound"
+        store.batch_update([(first, 1), (second, 1)])
+        assert store.get_task("a").generation == 2
+        assert store.get_task("b").generation == 2
+
+    def test_a_stale_member_aborts_the_whole_batch(self):
+        store = Store()
+        store.add_task(task("a"))
+        store.add_task(task("b"))
+        first = store.get_task("a")
+        second = store.get_task("b")
+        store.update_task(second, read_generation=1)
+        first.phase = "Bound"
+        events_before = len(store.events)
+        with pytest.raises(Conflict):
+            store.batch_update([(first, 1), (second, 1)])
+        assert store.get_task("a").generation == 1
+        assert len(store.events) == events_before
+
+    def test_an_aborted_batch_counts_one_refusal(self):
+        store = Store()
+        store.add_task(task("a"))
+        held = store.get_task("a")
+        store.update_task(held, read_generation=1)
+        with pytest.raises(Conflict):
+            store.batch_update([(held, 1)])
+        assert store.refused == 1
+
+    def test_the_batch_emits_one_event_per_member(self):
+        store = Store()
+        store.add_task(task("a"))
+        store.add_task(task("b"))
+        before = len(store.events)
+        store.batch_update(
+            [(store.get_task("a"), 1), (store.get_task("b"), 1)]
+        )
+        assert len(store.events) == before + 2

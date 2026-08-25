@@ -57,6 +57,28 @@ class Store:
         self.tasks[task.spec.name] = task
         self._record("task-updated", task.spec.name)
 
+
+    def batch_update(self, updates: list[tuple]) -> None:
+        """Apply every (task, read_generation) update or none of them.
+
+        The batch validates every generation before writing anything, so
+        a Conflict raised for the third update cannot leave the first two
+        applied: half-applied batches are the storage bug wearing a
+        controller costume.
+        """
+        for task, read_generation in updates:
+            held = self.get_task(task.spec.name)
+            if held.generation != read_generation:
+                self.refused += 1
+                raise Conflict(
+                    f"batch: {task.spec.name} moved: "
+                    f"{held.generation} != {read_generation}"
+                )
+        for task, read_generation in updates:
+            task.generation = read_generation + 1
+            self.tasks[task.spec.name] = task
+            self._record("task-updated", task.spec.name)
+
     def remove_task(self, name: str) -> None:
         if name not in self.tasks:
             raise NotFound(f"task {name}")
