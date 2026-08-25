@@ -8,6 +8,7 @@ from examples import (
     launchday,
     multiteam,
     patchtuesday,
+    regionfailover,
     releasetrain,
     simweek,
     storefront,
@@ -85,6 +86,15 @@ class TestPatchTuesday:
         assert "tick 10: walk refused by the calendar, opens at 30" in out
         assert "patched 4 nodes, serving floor 8" in out
         assert "final serving: 8 of 8" in out
+
+
+class TestRegionFailover:
+    def test_the_morning_sorts_itself(self, capsys):
+        assert regionfailover.main() == 0
+        out = capsys.readouterr().out
+        assert "checkout: failed over to us-east" in out
+        assert "gdpr-ledger: unaffected in eu-central" in out
+        assert "STRANDED" not in out
 
 
 class TestReleaseTrain:
