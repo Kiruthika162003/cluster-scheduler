@@ -4,6 +4,7 @@ import pytest
 
 from fleet.trials import (
     balloonpay,
+    bigfleet,
     canaryevidence,
     cascade,
     chaosfloor,
@@ -111,6 +112,7 @@ class TestEveryTrial:
             robotstop,
             nightshift,
             promisekeeper,
+            bigfleet,
         ],
     )
     def test_the_trial_holds(self, trial):

@@ -49,6 +49,7 @@ TRIALS = (
     "fleet.trials.robotstop",
     "fleet.trials.nightshift",
     "fleet.trials.promisekeeper",
+    "fleet.trials.bigfleet",
 )
 
 
