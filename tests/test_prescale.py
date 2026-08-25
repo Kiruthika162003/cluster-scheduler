@@ -37,10 +37,10 @@ class TestPrescaler:
 
 class TestQueuedWork:
     def test_ample_capacity_queues_nothing(self):
-        assert queued_work(500, 5, 20, lambda tick: 1000) == 0
+        assert queued_work(500, 5, 20, lambda _: 1000) == 0
 
     def test_scarce_capacity_integrates_the_backlog(self):
-        assert queued_work(900, 0, 10, lambda tick: 300) == 900
+        assert queued_work(900, 0, 10, lambda _: 300) == 900
 
     def test_no_burst_no_queue(self):
-        assert queued_work(0, 5, 20, lambda tick: 1) == 0
+        assert queued_work(0, 5, 20, lambda _: 1) == 0
