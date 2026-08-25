@@ -20,6 +20,7 @@ LEGAL_MOVES: dict[tuple[str, str], str] = {
     ("Bound", "Running"): "the probe came up",
     ("Bound", "Pending"): "its node died or it was displaced before starting",
     ("Bound", "Failed"): "it never started inside the startup budget",
+    ("Bound", "Evicted"): "preemption took its slot before it started",
     ("Running", "Succeeded"): "it finished its work",
     ("Running", "Failed"): "it crashed past patience",
     ("Running", "Pending"): "its node died or it was evicted",
