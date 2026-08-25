@@ -6,6 +6,7 @@ from fleet.control.hooks import (
     Chain,
     default_labels,
     minimum_resources,
+    priority_ceiling,
     refuse_label,
     require_label,
 )
@@ -85,3 +86,26 @@ class TestChainOrdering:
         chain.mutate_with("second", default_labels(owner="second"))
         shaped = chain.admit(spec())
         assert shaped.label_map()["owner"] == "first"
+
+
+class TestPriorityCeiling:
+    def ceilinged(self):
+        return priority_ceiling({"platform": 10000, "web": 1000})
+
+    def test_below_the_ceiling_passes(self):
+        hook = self.ceilinged()
+        assert hook(spec(namespace="web", priority=900)) is None
+
+    def test_above_the_ceiling_is_refused_with_both_numbers(self):
+        hook = self.ceilinged()
+        told = hook(spec(namespace="web", priority=5000))
+        assert told == "web may submit up to priority 1000, asked for 5000"
+
+    def test_an_unlisted_namespace_defaults_to_normal(self):
+        hook = self.ceilinged()
+        assert hook(spec(namespace="hobby", priority=100)) is None
+        assert hook(spec(namespace="hobby", priority=101)) is not None
+
+    def test_the_platform_may_reach_system(self):
+        hook = self.ceilinged()
+        assert hook(spec(namespace="platform", priority=10000)) is None

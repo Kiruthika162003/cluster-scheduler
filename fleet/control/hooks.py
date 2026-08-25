@@ -93,3 +93,24 @@ def require_label(key: str) -> Callable[[TaskSpec], str | None]:
         return None
 
     return hook
+
+
+def priority_ceiling(ceilings: dict[str, int]) -> Callable[[TaskSpec], str | None]:
+    """A namespace may not submit above its ceiling; the refusal shows both.
+
+    Priorities are an arms race with a treaty; the ceiling is where the
+    treaty meets the org chart. A namespace with no ceiling listed gets
+    the default of normal, because the safe default is the one that
+    makes someone ask.
+    """
+
+    def hook(spec: TaskSpec) -> str | None:
+        ceiling = ceilings.get(spec.namespace, 100)
+        if spec.priority > ceiling:
+            return (
+                f"{spec.namespace} may submit up to priority {ceiling}, "
+                f"asked for {spec.priority}"
+            )
+        return None
+
+    return hook
