@@ -9,6 +9,7 @@ from examples import (
     incident,
     launchday,
     multiteam,
+    nocweek,
     patchtuesday,
     regionfailover,
     releasetrain,
@@ -35,6 +36,16 @@ class TestExecMonthly:
         assert "platform-idle 20304.0" in out
         assert "ml: up 350%, 8000 to 36000" in out
         assert "ml: +133% of the move" in out
+
+
+class TestNocWeek:
+    def test_the_week_reads_end_to_end(self, capsys):
+        assert nocweek.main() == 0
+        out = capsys.readouterr().out
+        assert "tuesday: prober says up, 1 page(s) sent, first to meera" in out
+        assert "wednesday: checkout frozen (error budget exhausted)" in out
+        assert "thursday: n2 quarantined, schedulable=False" in out
+        assert "node-triage: 40m [automated by quarantine warden]" in out
 
 
 class TestFullDay:
