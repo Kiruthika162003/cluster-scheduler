@@ -16,6 +16,7 @@ from fleet.trials import (
     dealrestart,
     drainfloor,
     fairqueue,
+    fencerace,
     filterorder,
     fragmentation,
     ganghostages,
@@ -123,6 +124,7 @@ class TestEveryTrial:
             slowstart,
             dealrestart,
             burnalarm,
+            fencerace,
         ],
     )
     def test_the_trial_holds(self, trial):
