@@ -90,6 +90,35 @@ class Fleet:
         )
         return evicted, refused
 
+
+    def retire_node(self, who: str, node_name: str) -> int:
+        """Remove a node for good: drain what budgets allow, requeue the rest.
+
+        Departure is involuntary for whatever is still aboard, so the
+        stragglers bypass the budgets the way a node death would, and the
+        journal says so instead of pretending the drain sufficed.
+        """
+        evicted, refused = self.drain(who, node_name)
+        for name in refused:
+            task = self.store.get_task(name)
+            generation = task.generation
+            task.phase = "Pending"
+            task.node = None
+            store_task = task
+            self.store.update_task(store_task, read_generation=generation)
+            self.engine.queue.offer(
+                name, task.spec.priority, task.spec.namespace
+            )
+        self.store.remove_node(node_name)
+        self.engine.queue.shape_changed(self.now)
+        self._note(
+            who,
+            node_name,
+            "retire",
+            f"gone; {len(refused)} budget-protected tasks requeued anyway",
+        )
+        return len(evicted) + len(refused)
+
     def step(self) -> tuple[int, int]:
         placed, benched = self.engine.one_pass(self.store, self.now)
         self.now += 1
