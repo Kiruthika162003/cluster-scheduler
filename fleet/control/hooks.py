@@ -114,3 +114,27 @@ def priority_ceiling(ceilings: dict[str, int]) -> Callable[[TaskSpec], str | Non
         return None
 
     return hook
+
+def pin_image_digest(registry) -> Callable[[TaskSpec], TaskSpec]:
+    """Resolve an image tag to its digest at admission, once, forever.
+
+    The task that enters with image=web:latest leaves with the digest
+    the tag meant at this moment, so every replica of a rollout runs
+    one build no matter what the tag does later. The mutator composes
+    with the rollout stamping the same way a notary composes with a
+    contract: the writing happens first.
+    """
+
+    def hook(spec: TaskSpec) -> TaskSpec:
+        held = spec.label_map()
+        image = held.get("image")
+        if image is None or image.startswith("sha-"):
+            return spec
+        digest = registry.resolve(image)
+        return replace(
+            spec,
+            labels=tuple(sorted({**held, "image": digest}.items())),
+        )
+
+    return hook
+

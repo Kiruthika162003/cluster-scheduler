@@ -6,11 +6,13 @@ from fleet.control.hooks import (
     Chain,
     default_labels,
     minimum_resources,
+    pin_image_digest,
     priority_ceiling,
     refuse_label,
     require_label,
 )
 from fleet.errors import Invalid
+from fleet.images import Registry
 from fleet.objects import Resources, TaskSpec
 
 
@@ -109,3 +111,24 @@ class TestPriorityCeiling:
     def test_the_platform_may_reach_system(self):
         hook = self.ceilinged()
         assert hook(spec(namespace="platform", priority=10000)) is None
+
+
+class TestDigestPinning:
+    def test_a_tag_is_pinned_to_its_moment(self):
+        registry = Registry()
+        registry.push("web:latest", "sha-aaa")
+        hook = pin_image_digest(registry)
+        shaped = hook(spec(labels=(("image", "web:latest"),)))
+        assert shaped.label_map()["image"] == "sha-aaa"
+        registry.push("web:latest", "sha-bbb")
+        assert shaped.label_map()["image"] == "sha-aaa"
+
+    def test_an_already_pinned_image_passes_untouched(self):
+        hook = pin_image_digest(Registry())
+        pinned = spec(labels=(("image", "sha-ccc"),))
+        assert hook(pinned) is pinned
+
+    def test_imageless_specs_pass_untouched(self):
+        hook = pin_image_digest(Registry())
+        bare = spec()
+        assert hook(bare) is bare
