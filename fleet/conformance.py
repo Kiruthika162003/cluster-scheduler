@@ -200,8 +200,12 @@ class Conformance:
 
     def run(self) -> list[Check]:
         from fleet.conformance2 import SECOND_WAVE
+        from fleet.conformance3 import THIRD_WAVE
 
-        self.results = [check() for check in (*EVERY_CHECK, *SECOND_WAVE)]
+        self.results = [
+            check()
+            for check in (*EVERY_CHECK, *SECOND_WAVE, *THIRD_WAVE)
+        ]
         return self.results
 
     def failing(self) -> list[Check]:
