@@ -2,6 +2,7 @@ from __future__ import annotations
 
 from fleet.control.deploy import DeploySpec
 from fleet.objects import Resources, TaskSpec
+from fleet.sched.placement import Engine
 from fleet.sched.quota import Drf, Team
 from fleet.sim.cluster import Script, Sim
 
@@ -83,3 +84,48 @@ class TestSim:
         sim.run(5)
         assert sim.running_count() == 5
         assert len(sim.store.pending_tasks()) == 4
+
+
+class TestEngineSim:
+    def critical_and_batch(self) -> Sim:
+        sim = Sim(engine=Engine(), script=Script(silences={"n1": (10, 40)}))
+        sim.add_nodes(2)
+        sim.deploys.append(
+            DeploySpec(
+                name="critical",
+                replicas=2,
+                template=TaskSpec(
+                    name="tpl",
+                    needs=Resources(cpu=600, memory=600),
+                    priority=1500,
+                ),
+            )
+        )
+        sim.deploys.append(
+            DeploySpec(
+                name="batch",
+                replicas=2,
+                template=TaskSpec(
+                    name="tpl", needs=Resources(cpu=600, memory=600), priority=10
+                ),
+            )
+        )
+        return sim
+
+    def test_critical_rebinds_the_moment_the_node_returns(self):
+        sim = self.critical_and_batch()
+        sim.run(50)
+        held = sim.store.get_task("critical-1")
+        assert held.phase == "Running" and held.node == "n1"
+        story = sim.engine.journal.story("critical-1")
+        assert "[40] engine: bind critical-1: n1 accepted" in story
+
+    def test_batch_waits_out_the_whole_storm(self):
+        sim = self.critical_and_batch()
+        sim.run(50)
+        assert sim.store.get_task("batch-0").phase == "Pending"
+
+    def test_readiness_recovery_promotes_the_bench(self):
+        sim = self.critical_and_batch()
+        sim.run(50)
+        assert sim.engine.queue.promotions_on_change > 0

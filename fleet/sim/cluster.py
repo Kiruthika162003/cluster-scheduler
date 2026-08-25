@@ -18,6 +18,7 @@ from fleet.control.health import Keeper, Probe
 from fleet.control.nodes import Monitor
 from fleet.objects import Node, Resources
 from fleet.sched.core import Scheduler
+from fleet.sched.placement import Engine
 from fleet.sched.scorers import spread
 from fleet.store import Store
 
@@ -38,6 +39,7 @@ class Script:
 class Sim:
     store: Store = field(default_factory=Store)
     scheduler: Scheduler = field(default_factory=lambda: Scheduler(scorers=(spread,)))
+    engine: Engine | None = None
     monitor: Monitor = field(default_factory=Monitor)
     keeper: Keeper = field(default_factory=Keeper)
     deployer: Deployer = field(default_factory=Deployer)
@@ -77,13 +79,26 @@ class Sim:
             self.keeper.probes[name] = Probe(failing_attempts=failures)
 
     def tick(self) -> None:
+        ready_before = {
+            name for name, node in self.store.nodes.items() if node.ready
+        }
         for name in self.store.nodes:
             if not self.script.is_silent(name, self.now):
                 self.monitor.beat(self.store, name, self.now)
         self.monitor.sweep(self.store, self.now)
+        ready_after = {
+            name for name, node in self.store.nodes.items() if node.ready
+        }
+        if self.engine is not None and ready_after - ready_before:
+            self.engine.queue.shape_changed(self.now)
         for spec in self.deploys:
             self.deployer.reconcile(self.store, spec)
-        _, stuck = self.scheduler.schedule_pending(self.store)
+        if self.engine is not None:
+            for task in self.store.pending_tasks():
+                self.engine.queue.offer(task.spec.name, task.spec.priority)
+            _, stuck = self.engine.one_pass(self.store, self.now)
+        else:
+            _, stuck = self.scheduler.schedule_pending(self.store)
         self.stuck_history.append(stuck)
         if self.node_scaler is not None:
             for name in self.node_scaler.observe_stuck(stuck, self.now):
@@ -91,6 +106,8 @@ class Sim:
                     Node(name=name, capacity=self.auto_node_shape)
                 )
                 self.monitor.beat(self.store, name, self.now)
+                if self.engine is not None:
+                    self.engine.queue.shape_changed(self.now)
             empty = [
                 node.name
                 for node in self.store.nodes.values()
