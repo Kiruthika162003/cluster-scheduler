@@ -5,6 +5,7 @@ import pytest
 from fleet.trials import (
     balloonpay,
     bigfleet,
+    burnalarm,
     canaryevidence,
     cascade,
     chaosfloor,
@@ -121,6 +122,7 @@ class TestEveryTrial:
             grandtour,
             slowstart,
             dealrestart,
+            burnalarm,
         ],
     )
     def test_the_trial_holds(self, trial):

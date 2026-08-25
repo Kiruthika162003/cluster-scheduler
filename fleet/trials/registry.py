@@ -54,6 +54,7 @@ TRIALS = (
     "fleet.trials.grandtour",
     "fleet.trials.slowstart",
     "fleet.trials.dealrestart",
+    "fleet.trials.burnalarm",
 )
 
 
