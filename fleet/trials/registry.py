@@ -50,6 +50,7 @@ TRIALS = (
     "fleet.trials.nightshift",
     "fleet.trials.promisekeeper",
     "fleet.trials.bigfleet",
+    "fleet.trials.strandedmemory",
 )
 
 

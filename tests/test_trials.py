@@ -41,6 +41,7 @@ from fleet.trials import (
     spotnotice,
     staleaddress,
     starvation,
+    strandedmemory,
     twobills,
     twochoices,
     warmupdebt,
@@ -113,6 +114,7 @@ class TestEveryTrial:
             nightshift,
             promisekeeper,
             bigfleet,
+            strandedmemory,
         ],
     )
     def test_the_trial_holds(self, trial):
