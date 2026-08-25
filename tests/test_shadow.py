@@ -12,19 +12,19 @@ class TestShadowDiff:
 
     def test_the_caller_always_gets_the_production_answer(self):
         diff = ShadowDiff()
-        told = diff.mirror(5, lambda x: "right", lambda x: "wrong")
+        told = diff.mirror(5, lambda _: "right", lambda _: "wrong")
         assert told == "right"
 
     def test_disagreements_bucket_by_request_kind(self):
         diff = ShadowDiff()
-        diff.mirror(5, lambda x: 1, lambda x: 2)
-        diff.mirror("q", lambda x: 1, lambda x: 2)
+        diff.mirror(5, lambda _: 1, lambda _: 2)
+        diff.mirror("q", lambda _: 1, lambda _: 2)
         assert diff.disagreements == {"int": 1, "str": 1}
 
     def test_samples_cap_but_counts_do_not(self):
         diff = ShadowDiff(sample_cap=2)
         for number in range(10):
-            diff.mirror(number, lambda x: 1, lambda x: 2)
+            diff.mirror(number, lambda _: 1, lambda _: 2)
         assert len(diff.samples) == 2
         assert diff.compared - diff.agreed == 10
 
