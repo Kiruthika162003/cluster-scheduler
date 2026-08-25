@@ -40,6 +40,7 @@ TRIALS = (
     "fleet.trials.staleaddress",
     "fleet.trials.coldpull",
     "fleet.trials.twochoices",
+    "fleet.trials.longhaul",
 )
 
 

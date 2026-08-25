@@ -16,6 +16,7 @@ from fleet.trials import (
     ganghostages,
     ghosts,
     kernelwalk,
+    longhaul,
     moneybill,
     noisyfair,
     oldiron,
@@ -71,6 +72,7 @@ class TestEveryTrial:
             moneybill,
             starvation,
             kernelwalk,
+    longhaul,
             spotnotice,
             softstep,
             noisyfair,
@@ -89,6 +91,7 @@ class TestEveryTrial:
             staleaddress,
             coldpull,
             twochoices,
+            longhaul,
         ],
     )
     def test_the_trial_holds(self, trial):
