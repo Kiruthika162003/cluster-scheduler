@@ -6,6 +6,7 @@ from examples import (
     incident,
     launchday,
     multiteam,
+    patchtuesday,
     simweek,
     storefront,
     upgrade,
@@ -64,6 +65,15 @@ class TestStorefront:
         assert "refused ['shop-r2-1', 'shop-r2-2', 'shop-r2-3']" in out
         assert "nothing; invariants hold" in out
         assert "all 12 conformance checks hold" in out
+
+
+class TestPatchTuesday:
+    def test_the_calendar_holds_then_the_walk_holds_the_floor(self, capsys):
+        assert patchtuesday.main() == 0
+        out = capsys.readouterr().out
+        assert "tick 10: walk refused by the calendar, opens at 30" in out
+        assert "patched 4 nodes, serving floor 8" in out
+        assert "final serving: 8 of 8" in out
 
 
 class TestSimweek:
