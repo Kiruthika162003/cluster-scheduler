@@ -8,6 +8,7 @@ from examples import (
     launchday,
     multiteam,
     patchtuesday,
+    releasetrain,
     simweek,
     storefront,
     upgrade,
@@ -84,6 +85,16 @@ class TestPatchTuesday:
         assert "tick 10: walk refused by the calendar, opens at 30" in out
         assert "patched 4 nodes, serving floor 8" in out
         assert "final serving: 8 of 8" in out
+
+
+class TestReleaseTrain:
+    def test_the_bad_build_is_yanked_and_the_fix_rides_through(self, capsys):
+        assert releasetrain.main() == 0
+        out = capsys.readouterr().out
+        assert "v42 canary verdict: rollback" in out
+        assert "stable held at v41 through the freeze" in out
+        assert "v43 delivery: delivered after waves" in out
+        assert "channels close with stable v43" in out
 
 
 class TestSimweek:
