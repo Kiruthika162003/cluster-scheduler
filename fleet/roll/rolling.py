@@ -32,6 +32,13 @@ class Roller:
     surged: int = 0
     retired: int = 0
     halted: int = 0
+    paused: bool = False
+
+    def pause(self) -> None:
+        self.paused = True
+
+    def resume(self) -> None:
+        self.paused = False
 
     def _mine(self, store: Store, roll: Rollout) -> list[Task]:
         return sorted(
@@ -72,7 +79,9 @@ class Roller:
         ]
 
     def step(self, store: Store, roll: Rollout, guard: Guard | None = None) -> str:
-        """One increment; returns what happened: surged, retired, done, stuck."""
+        """One increment; returns surged, retired, done, stuck, or paused."""
+        if self.paused:
+            return "paused"
         fresh = self.fresh(store, roll)
         stale = self.stale(store, roll)
         healthy_fresh = [task for task in fresh if task.phase == "Running"]

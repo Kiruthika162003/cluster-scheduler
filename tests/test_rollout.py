@@ -188,3 +188,38 @@ class TestStartupGate:
         keeper.tick(store, 1)
         assert keeper.restarts == 1
         assert store.get_task("t").phase == "Bound"
+
+
+class TestPauseResume:
+    def test_a_paused_rollout_stands_perfectly_still(self):
+        roller = Roller()
+        store = seeded(roller, revision=1)
+        fresh = Rollout(name="web", replicas=3, template=template(), revision=2)
+        roller.step(store, fresh)
+        count_before = len(store.tasks)
+        roller.pause()
+        for _ in range(5):
+            assert roller.step(store, fresh) == "paused"
+        assert len(store.tasks) == count_before
+
+    def test_resume_continues_where_it_stood(self):
+        roller = Roller()
+        store = seeded(roller, revision=1)
+        fresh = Rollout(name="web", replicas=3, template=template(), revision=2)
+        roller.step(store, fresh)
+        for task in store.tasks.values():
+            if task.phase == "Pending":
+                task.phase = "Running"
+        roller.pause()
+        roller.step(store, fresh)
+        roller.resume()
+        history = run_out(store, roller, fresh)
+        assert history[-1] == "done"
+        assert sorted(store.tasks) == ["web-r2-0", "web-r2-1", "web-r2-2"]
+
+    def test_pausing_a_finished_rollout_reports_paused_not_done(self):
+        roller = Roller()
+        store = seeded(roller, revision=2)
+        roll = Rollout(name="web", replicas=3, template=template(), revision=2)
+        roller.pause()
+        assert roller.step(store, roll) == "paused"
