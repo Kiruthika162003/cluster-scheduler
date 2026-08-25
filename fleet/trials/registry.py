@@ -56,6 +56,7 @@ TRIALS = (
     "fleet.trials.dealrestart",
     "fleet.trials.burnalarm",
     "fleet.trials.fencerace",
+    "fleet.trials.greenshift",
 )
 
 
