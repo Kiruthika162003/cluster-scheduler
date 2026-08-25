@@ -39,6 +39,7 @@ TRIALS = (
     "fleet.trials.oldiron",
     "fleet.trials.staleaddress",
     "fleet.trials.coldpull",
+    "fleet.trials.twochoices",
 )
 
 

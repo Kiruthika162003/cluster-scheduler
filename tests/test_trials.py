@@ -33,6 +33,7 @@ from fleet.trials import (
     staleaddress,
     starvation,
     twobills,
+    twochoices,
     warmupdebt,
     wrongprobe,
 )
@@ -87,6 +88,7 @@ class TestEveryTrial:
             oldiron,
             staleaddress,
             coldpull,
+            twochoices,
         ],
     )
     def test_the_trial_holds(self, trial):
