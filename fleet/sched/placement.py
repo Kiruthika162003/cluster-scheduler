@@ -32,10 +32,12 @@ class Engine:
     queue: SchedulingQueue = field(default_factory=SchedulingQueue)
     verdicts: Verdicts = field(default_factory=Verdicts)
     guard: Guard | None = None
+    max_displacements_per_pass: int = 10**9
     journal: Journal = field(default_factory=Journal)
     placed: int = 0
     displaced: int = 0
     preemptions_vetoed: int = 0
+    churn_deferred: int = 0
 
     def submit(self, store: Store, task: Task) -> None:
         store.add_task(task)
@@ -76,6 +78,7 @@ class Engine:
 
     def one_pass(self, store: Store, now: int) -> tuple[int, int]:
         placed = benched = 0
+        displaced_this_pass = 0
         for name in self.queue.ready(now):
             task = store.get_task(name)
             try:
@@ -89,6 +92,16 @@ class Engine:
                 continue
             except Unschedulable:
                 pass
+            churn_left = self.max_displacements_per_pass - displaced_this_pass
+            if churn_left <= 0:
+                self.churn_deferred += 1
+                wait = self.queue.refuse(name, now)
+                self.journal.note(
+                    now, "engine", name, "bench",
+                    f"churn budget spent, back in {wait}",
+                )
+                benched += 1
+                continue
             if self._may_preempt_for(store, task) and self._budget_permits(
                 store, task
             ):
@@ -100,6 +113,7 @@ class Engine:
                     store.update_task(victim, read_generation=generation)
                     self.queue.offer(victim_name, victim.spec.priority, victim.spec.namespace)
                     self.displaced += 1
+                    displaced_this_pass += 1
                     self.journal.note(
                         now, "engine", victim_name, "displace",
                         f"room for {name}",

@@ -44,6 +44,7 @@ TRIALS = (
     "fleet.trials.fairqueue",
     "fleet.trials.reboot",
     "fleet.trials.zoneloss",
+    "fleet.trials.churnbudget",
 )
 
 

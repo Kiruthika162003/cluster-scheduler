@@ -8,6 +8,7 @@ from fleet.trials import (
     cascade,
     chaosfloor,
     chattyhops,
+    churnbudget,
     coldpull,
     datagravity,
     drainfloor,
@@ -101,6 +102,7 @@ class TestEveryTrial:
             fairqueue,
             reboot,
             zoneloss,
+            churnbudget,
         ],
     )
     def test_the_trial_holds(self, trial):
