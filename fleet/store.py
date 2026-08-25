@@ -28,11 +28,15 @@ class Store:
     tasks: dict[str, Task] = field(default_factory=dict)
     nodes: dict[str, Node] = field(default_factory=dict)
     events: list[Event] = field(default_factory=list)
+    next_sequence: int = 0
     writes: int = 0
     refused: int = 0
 
     def _record(self, kind: str, name: str) -> None:
-        self.events.append(Event(sequence=len(self.events), kind=kind, name=name))
+        self.events.append(
+            Event(sequence=self.next_sequence, kind=kind, name=name)
+        )
+        self.next_sequence += 1
         self.writes += 1
 
     def add_task(self, task: Task) -> None:
@@ -109,4 +113,4 @@ class Store:
         return [task for task in self.tasks.values() if task.phase == "Pending"]
 
     def since(self, cursor: int) -> list[Event]:
-        return self.events[cursor:]
+        return [event for event in self.events if event.sequence >= cursor]
