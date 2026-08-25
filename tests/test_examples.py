@@ -3,6 +3,7 @@ from __future__ import annotations
 from examples import (
     batchnight,
     blackfriday,
+    execmonthly,
     gameday,
     incident,
     launchday,
@@ -23,6 +24,16 @@ class TestBlackFriday:
         assert "no, only 1800m after bookings" in out
         assert "checkout surge running at tick 50, balloons popped 1" in out
         assert "batch finished 2 of 2" in out
+
+
+class TestExecMonthly:
+    def test_the_owner_reads_one_screen(self, capsys):
+        assert execmonthly.main() == 0
+        out = capsys.readouterr().out
+        assert "n+1: ok, survives losing n3" in out
+        assert "platform-idle 20304.0" in out
+        assert "ml: up 350%, 8000 to 36000" in out
+        assert "ml: +133% of the move" in out
 
 
 class TestGameday:
