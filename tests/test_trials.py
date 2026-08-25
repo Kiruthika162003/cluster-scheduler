@@ -26,6 +26,7 @@ from fleet.trials import (
     overcommit,
     packing,
     reboot,
+    robotstop,
     rollbacklag,
     rolloutpace,
     scalerfight,
@@ -105,6 +106,7 @@ class TestEveryTrial:
             zoneloss,
             churnbudget,
             shadowdiff,
+            robotstop,
         ],
     )
     def test_the_trial_holds(self, trial):

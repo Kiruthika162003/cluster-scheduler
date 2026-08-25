@@ -46,6 +46,7 @@ TRIALS = (
     "fleet.trials.zoneloss",
     "fleet.trials.churnbudget",
     "fleet.trials.shadowdiff",
+    "fleet.trials.robotstop",
 )
 
 
