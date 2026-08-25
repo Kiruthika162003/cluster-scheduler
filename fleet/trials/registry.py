@@ -33,6 +33,7 @@ TRIALS = (
     "fleet.trials.twobills",
     "fleet.trials.wrongprobe",
     "fleet.trials.scalerfight",
+    "fleet.trials.datagravity",
 )
 
 

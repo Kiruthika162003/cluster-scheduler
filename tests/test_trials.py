@@ -7,6 +7,7 @@ from fleet.trials import (
     canaryevidence,
     cascade,
     chaosfloor,
+    datagravity,
     drainfloor,
     filterorder,
     fragmentation,
@@ -74,6 +75,7 @@ class TestEveryTrial:
             twobills,
             wrongprobe,
             scalerfight,
+            datagravity,
         ],
     )
     def test_the_trial_holds(self, trial):
