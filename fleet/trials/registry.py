@@ -37,6 +37,7 @@ TRIALS = (
     "fleet.trials.chattyhops",
     "fleet.trials.spikewave",
     "fleet.trials.oldiron",
+    "fleet.trials.staleaddress",
 )
 
 

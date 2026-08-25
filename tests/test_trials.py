@@ -29,6 +29,7 @@ from fleet.trials import (
     spikewave,
     splitbrain,
     spotnotice,
+    staleaddress,
     starvation,
     twobills,
     warmupdebt,
@@ -82,6 +83,7 @@ class TestEveryTrial:
             chattyhops,
             spikewave,
             oldiron,
+            staleaddress,
         ],
     )
     def test_the_trial_holds(self, trial):
