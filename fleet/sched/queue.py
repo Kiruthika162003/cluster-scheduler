@@ -32,6 +32,7 @@ class SchedulingQueue:
     waiting: dict[str, Waiting] = field(default_factory=dict)
     aging_every: int = 0
     namespace_weights: dict[str, int] = field(default_factory=dict)
+    namespace_credit: dict[str, float] = field(default_factory=dict)
     cluster_shape: int = 0
     promotions_on_change: int = 0
 
@@ -42,7 +43,20 @@ class SchedulingQueue:
             )
 
     def forget(self, name: str) -> None:
-        self.waiting.pop(name, None)
+        held = self.waiting.pop(name, None)
+        if held is not None and self.namespace_weights:
+            waiting_spaces = {w.namespace for w in self.waiting.values()}
+            waiting_spaces.add(held.namespace)
+            total = sum(
+                self.namespace_weights.get(space, 1)
+                for space in waiting_spaces
+            )
+            for space in waiting_spaces:
+                share = self.namespace_weights.get(space, 1) / total
+                self.namespace_credit[space] = (
+                    self.namespace_credit.get(space, 0.0) + share
+                )
+            self.namespace_credit[held.namespace] -= 1.0
 
     def ready(self, now: int) -> list[str]:
         due = [
@@ -87,11 +101,15 @@ class SchedulingQueue:
             if held.passes_waited >= passes
         )
     def _interleave(self, ordered, effective):
-        """Within each effective-priority band, deal namespaces by weight.
+        """Within each effective-priority band, deal namespaces by credit.
 
-        A band is dealt in rounds: each namespace takes up to its weight
-        from its own queue per round, so a 2:1 weighting yields a 2:1
-        admission stream under contention instead of alphabet order.
+        Each call credits every waiting namespace its weight, and forget()
+        deducts one from the namespace served, so the credit balance is a
+        deficit counter that survives across passes. The first version
+        dealt each band fresh per call and a consumer taking one task per
+        pass drained the alphabetically first namespace entirely, weights
+        inverted by the restart; the credit is what makes the weights
+        hold for consumers of any appetite.
         """
         dealt = []
         band: list = []
@@ -105,12 +123,24 @@ class SchedulingQueue:
             lanes: dict[str, list] = {}
             for waiting in band:
                 lanes.setdefault(waiting.namespace, []).append(waiting)
+            working = {
+                space: self.namespace_credit.get(space, 0.0)
+                for space in lanes
+            }
             while any(lanes.values()):
-                for space in sorted(lanes):
-                    allowance = self.namespace_weights.get(space, 1)
-                    for _ in range(allowance):
-                        if lanes[space]:
-                            dealt.append(lanes[space].pop(0))
+                nonempty = [space for space in lanes if lanes[space]]
+                chosen = min(
+                    nonempty, key=lambda space: (-working[space], space)
+                )
+                dealt.append(lanes[chosen].pop(0))
+                total = sum(
+                    self.namespace_weights.get(space, 1) for space in nonempty
+                )
+                for space in nonempty:
+                    working[space] += (
+                        self.namespace_weights.get(space, 1) / total
+                    )
+                working[chosen] -= 1.0
             if held is not None:
                 band_key = key
                 band = [held]

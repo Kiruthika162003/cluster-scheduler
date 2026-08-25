@@ -12,6 +12,7 @@ from fleet.trials import (
     churnbudget,
     coldpull,
     datagravity,
+    dealrestart,
     drainfloor,
     fairqueue,
     filterorder,
@@ -119,6 +120,7 @@ class TestEveryTrial:
             strandedmemory,
             grandtour,
             slowstart,
+            dealrestart,
         ],
     )
     def test_the_trial_holds(self, trial):
