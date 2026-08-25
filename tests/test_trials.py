@@ -17,6 +17,7 @@ from fleet.trials import (
     kernelwalk,
     moneybill,
     noisyfair,
+    oldiron,
     oscillation,
     overcommit,
     packing,
@@ -80,6 +81,7 @@ class TestEveryTrial:
             datagravity,
             chattyhops,
             spikewave,
+            oldiron,
         ],
     )
     def test_the_trial_holds(self, trial):

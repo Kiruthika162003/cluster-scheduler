@@ -36,6 +36,7 @@ TRIALS = (
     "fleet.trials.datagravity",
     "fleet.trials.chattyhops",
     "fleet.trials.spikewave",
+    "fleet.trials.oldiron",
 )
 
 
