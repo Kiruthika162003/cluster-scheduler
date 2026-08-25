@@ -52,6 +52,7 @@ TRIALS = (
     "fleet.trials.bigfleet",
     "fleet.trials.strandedmemory",
     "fleet.trials.grandtour",
+    "fleet.trials.slowstart",
 )
 
 

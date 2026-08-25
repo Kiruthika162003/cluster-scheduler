@@ -22,12 +22,20 @@ class Endpoint:
     service_ticks: int
     queue: int = 0
     served: int = 0
+    joined_at: int = 0
+    cold_period: int = 0
+    cold_for: int = 0
 
     def offer(self) -> None:
         self.queue += 1
 
+    def _period(self, now: int) -> int:
+        if self.cold_for and now - self.joined_at < self.cold_for:
+            return self.cold_period or self.service_ticks
+        return self.service_ticks
+
     def work(self, now: int) -> None:
-        if now % self.service_ticks == 0 and self.queue > 0:
+        if now % self._period(now) == 0 and self.queue > 0:
             self.queue -= 1
             self.served += 1
 
@@ -37,6 +45,8 @@ class Balancer:
     policy: str
     endpoints: list[Endpoint]
     seed: int = 7
+    slow_start: int = 0
+    now: int = 0
     cursor: int = 0
     worst_depth: int = 0
     source: random.Random = field(init=False)
@@ -44,17 +54,32 @@ class Balancer:
     def __post_init__(self) -> None:
         self.source = random.Random(self.seed)
 
+    def _ramp_weight(self, endpoint: Endpoint) -> float:
+        if not self.slow_start:
+            return 1.0
+        age = self.now - endpoint.joined_at
+        return min(1.0, max(0.1, age / self.slow_start))
+
     def pick(self) -> Endpoint:
         if self.policy == "round-robin":
-            chosen = self.endpoints[self.cursor % len(self.endpoints)]
-            self.cursor += 1
+            for _ in range(len(self.endpoints)):
+                chosen = self.endpoints[self.cursor % len(self.endpoints)]
+                self.cursor += 1
+                ramp = self._ramp_weight(chosen)
+                if ramp >= 1.0 or self.source.random() <= ramp:
+                    return chosen
             return chosen
         if self.policy == "random":
             return self.source.choice(self.endpoints)
         first, second = self.source.sample(self.endpoints, 2)
-        return first if first.queue <= second.queue else second
+        chosen = first if first.queue <= second.queue else second
+        ramp = self._ramp_weight(chosen)
+        if ramp < 1.0 and self.source.random() > ramp:
+            return second if chosen is first else first
+        return chosen
 
     def tick(self, now: int, arrivals: int) -> None:
+        self.now = now
         for _ in range(arrivals):
             self.pick().offer()
         for endpoint in self.endpoints:

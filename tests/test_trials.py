@@ -36,6 +36,7 @@ from fleet.trials import (
     scalerfight,
     shadowdiff,
     slivers,
+    slowstart,
     softstep,
     spikewave,
     splitbrain,
@@ -117,6 +118,7 @@ class TestEveryTrial:
             bigfleet,
             strandedmemory,
             grandtour,
+            slowstart,
         ],
     )
     def test_the_trial_holds(self, trial):

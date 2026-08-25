@@ -53,3 +53,33 @@ class TestPolicies:
             return balancer.worst_depth
 
         assert once() == once()
+
+
+class TestSlowStart:
+    def test_the_ramp_weight_climbs_with_age(self):
+        balancer = Balancer(
+            policy="round-robin", endpoints=pair(), slow_start=10
+        )
+        newcomer = Endpoint(name="cold", service_ticks=1, joined_at=0)
+        balancer.now = 1
+        assert balancer._ramp_weight(newcomer) == 0.1
+        balancer.now = 10
+        assert balancer._ramp_weight(newcomer) == 1.0
+
+    def test_without_slow_start_the_weight_is_flat(self):
+        balancer = Balancer(policy="round-robin", endpoints=pair())
+        newcomer = Endpoint(name="cold", service_ticks=1, joined_at=0)
+        assert balancer._ramp_weight(newcomer) == 1.0
+
+    def test_a_cold_period_slows_the_drain_then_lifts(self):
+        endpoint = Endpoint(
+            name="cold", service_ticks=1, joined_at=0, cold_period=5, cold_for=10
+        )
+        endpoint.offer()
+        endpoint.work(now=3)
+        assert endpoint.queue == 1
+        endpoint.work(now=5)
+        assert endpoint.queue == 0
+        endpoint.offer()
+        endpoint.work(now=11)
+        assert endpoint.queue == 0
