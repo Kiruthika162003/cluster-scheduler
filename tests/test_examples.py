@@ -1,6 +1,15 @@
 from __future__ import annotations
 
-from examples import batchnight, incident, launchday, multiteam, simweek, upgrade
+from examples import batchnight, gameday, incident, launchday, multiteam, simweek, upgrade
+
+
+class TestGameday:
+    def test_the_worst_storm_replays_and_the_brief_closes_clean(self, capsys):
+        assert gameday.main() == 0
+        out = capsys.readouterr().out
+        assert "campaign floor across 25 storms: 4 of 8" in out
+        assert "replayed seed 13: truthful floor 4 (campaign said 4)" in out
+        assert "all 7 conformance checks hold" in out
 
 
 class TestIncident:
