@@ -25,6 +25,7 @@ from fleet.trials import (
     scalerfight,
     slivers,
     softstep,
+    spikewave,
     splitbrain,
     spotnotice,
     starvation,
@@ -78,6 +79,7 @@ class TestEveryTrial:
             scalerfight,
             datagravity,
             chattyhops,
+            spikewave,
         ],
     )
     def test_the_trial_holds(self, trial):
