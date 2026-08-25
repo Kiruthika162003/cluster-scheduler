@@ -49,6 +49,11 @@ class Fleet:
     def apply_deploy(self, who: str, spec: DeploySpec) -> None:
         self.deploys[spec.name] = spec
         created, deleted = self.deployer.reconcile(self.store, spec)
+        for task in self.store.pending_tasks():
+            if task.spec.label_map().get("deploy") == spec.name:
+                self.engine.queue.offer(
+                    task.spec.name, task.spec.priority, task.spec.namespace
+                )
         self._note(
             who,
             spec.name,

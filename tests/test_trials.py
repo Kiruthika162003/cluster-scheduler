@@ -18,6 +18,7 @@ from fleet.trials import (
     fragmentation,
     ganghostages,
     ghosts,
+    grandtour,
     kernelwalk,
     longhaul,
     moneybill,
@@ -115,6 +116,7 @@ class TestEveryTrial:
             promisekeeper,
             bigfleet,
             strandedmemory,
+            grandtour,
         ],
     )
     def test_the_trial_holds(self, trial):
