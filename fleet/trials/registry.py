@@ -45,6 +45,7 @@ TRIALS = (
     "fleet.trials.reboot",
     "fleet.trials.zoneloss",
     "fleet.trials.churnbudget",
+    "fleet.trials.shadowdiff",
 )
 
 

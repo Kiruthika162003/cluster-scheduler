@@ -29,6 +29,7 @@ from fleet.trials import (
     rollbacklag,
     rolloutpace,
     scalerfight,
+    shadowdiff,
     slivers,
     softstep,
     spikewave,
@@ -103,6 +104,7 @@ class TestEveryTrial:
             reboot,
             zoneloss,
             churnbudget,
+            shadowdiff,
         ],
     )
     def test_the_trial_holds(self, trial):
