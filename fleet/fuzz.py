@@ -81,6 +81,19 @@ def _random_op(fleet: Fleet, source: random.Random, counter: int) -> str:
         )
         fleet.apply_deploy("fuzz", spec)
         return f"scale churn={spec.replicas}"
+    if roll < 0.82:
+        name = f"vip-{counter}"
+        fleet.submit(
+            "fuzz",
+            Task(
+                spec=TaskSpec(
+                    name=name,
+                    needs=Resources(cpu=900, memory=900),
+                    priority=1500,
+                )
+            ),
+        )
+        return f"vip-flood {name}"
     fleet.step()
     return "step"
 
