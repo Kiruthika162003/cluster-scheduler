@@ -38,6 +38,7 @@ TRIALS = (
     "fleet.trials.spikewave",
     "fleet.trials.oldiron",
     "fleet.trials.staleaddress",
+    "fleet.trials.coldpull",
 )
 
 

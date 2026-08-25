@@ -8,6 +8,7 @@ from fleet.trials import (
     cascade,
     chaosfloor,
     chattyhops,
+    coldpull,
     datagravity,
     drainfloor,
     filterorder,
@@ -81,9 +82,11 @@ class TestEveryTrial:
             scalerfight,
             datagravity,
             chattyhops,
+    coldpull,
             spikewave,
             oldiron,
             staleaddress,
+            coldpull,
         ],
     )
     def test_the_trial_holds(self, trial):
