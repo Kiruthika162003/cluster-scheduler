@@ -10,6 +10,8 @@ and humans, which is where phase bugs are actually caught.
 
 from __future__ import annotations
 
+import itertools
+
 from fleet.errors import Invalid
 from fleet.objects import PHASES
 
@@ -46,7 +48,7 @@ def terminal_phases() -> frozenset[str]:
 
 def check_history(phases: list[str]) -> str | None:
     """The first illegal step in a task's recorded life, or None."""
-    for before, after in zip(phases, phases[1:], strict=False):
+    for before, after in itertools.pairwise(phases):
         if before == after:
             continue
         if not may_move(before, after):
