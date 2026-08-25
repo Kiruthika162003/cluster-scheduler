@@ -1,6 +1,15 @@
 from __future__ import annotations
 
-from examples import batchnight, gameday, incident, launchday, multiteam, simweek, upgrade
+from examples import (
+    batchnight,
+    gameday,
+    incident,
+    launchday,
+    multiteam,
+    simweek,
+    storefront,
+    upgrade,
+)
 
 
 class TestGameday:
@@ -45,6 +54,16 @@ class TestBatchnight:
         assert "rebuild-run0 done at tick 4" in out
         assert "rebuild-run2 done at tick 204" in out
         assert "launched 24 tasks for 18 completions, retried 6" in out
+
+
+class TestStorefront:
+    def test_the_platform_story_ends_clean(self, capsys):
+        assert storefront.main() == 0
+        out = capsys.readouterr().out
+        assert "rollout complete: 4 of 4 available" in out
+        assert "refused ['shop-r2-1', 'shop-r2-2', 'shop-r2-3']" in out
+        assert "nothing; invariants hold" in out
+        assert "all 7 conformance checks hold" in out
 
 
 class TestSimweek:
