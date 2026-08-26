@@ -1,8 +1,11 @@
 from __future__ import annotations
 
+import importlib
+
 import pytest
 
 from fleet.trials import (
+    backfillrent,
     balloonpay,
     bigfleet,
     burnalarm,
@@ -15,23 +18,18 @@ from fleet.trials import (
     datagravity,
     dealrestart,
     drainfloor,
+    duckbill,
+    eightbox,
     fairqueue,
     fencerace,
-    greenshift,
-    hotmoves,
-    backfillrent,
-    hedgeprice,
-    splitcalm,
-    queueknee,
-    eightbox,
-    sketchbill,
-    scrubpromise,
-    duckbill,
     filterorder,
     fragmentation,
     ganghostages,
     ghosts,
     grandtour,
+    greenshift,
+    hedgeprice,
+    hotmoves,
     kernelwalk,
     longhaul,
     moneybill,
@@ -42,17 +40,21 @@ from fleet.trials import (
     overcommit,
     packing,
     promisekeeper,
+    queueknee,
     reboot,
     robotstop,
     rollbacklag,
     rolloutpace,
     scalerfight,
+    scrubpromise,
     shadowdiff,
+    sketchbill,
     slivers,
     slowstart,
     softstep,
     spikewave,
     splitbrain,
+    splitcalm,
     spotnotice,
     staleaddress,
     starvation,
@@ -160,3 +162,17 @@ class TestEveryTrial:
     def test_the_report_renders_every_line(self):
         text = report()
         assert "fragmentation" in text and "0 broken" in text
+
+    def test_every_trial_name_matches_its_module(self):
+        for dotted in TRIALS:
+            module = importlib.import_module(dotted)
+            verdict = module.run()
+            assert verdict.trial == dotted.rsplit(".", 1)[1]
+
+    def test_no_trial_is_registered_twice(self):
+        assert len(TRIALS) == len(set(TRIALS))
+
+    def test_every_verdict_carries_numbers(self):
+        for dotted in TRIALS:
+            module = importlib.import_module(dotted)
+            assert module.run().numbers
