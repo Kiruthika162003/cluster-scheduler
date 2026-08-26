@@ -11,6 +11,7 @@ from examples import (
     multiteam,
     nocweek,
     patchtuesday,
+    quarterreview,
     regionfailover,
     releasetrain,
     simweek,
@@ -36,6 +37,15 @@ class TestExecMonthly:
         assert "platform-idle 20304.0" in out
         assert "ml: up 350%, 8000 to 36000" in out
         assert "ml: +133% of the move" in out
+
+
+class TestQuarterReview:
+    def test_the_three_answers_land_on_one_page(self, capsys):
+        assert quarterreview.main() == 0
+        out = capsys.readouterr().out
+        assert "full around tick 268 (window 267 to 268)" in out
+        assert "headroom: 2800m -> 4800m" in out
+        assert "1240.0W burning now, 200.0W recoverable" in out
 
 
 class TestNocWeek:
