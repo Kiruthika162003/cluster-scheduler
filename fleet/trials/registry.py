@@ -61,6 +61,7 @@ TRIALS = (
     "fleet.trials.backfillrent",
     "fleet.trials.hedgeprice",
     "fleet.trials.splitcalm",
+    "fleet.trials.queueknee",
 )
 
 
