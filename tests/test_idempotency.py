@@ -76,3 +76,14 @@ class TestTheHorizon:
         store.finish("k", response="done", now=2)
         store.begin("k", now=3)
         assert store.meter() == "1 replays served, 1 duplicates prevented"
+
+    def test_abandoning_the_unbegun_is_refused(self):
+        with pytest.raises(Invalid):
+            KeyStore().abandon("never-began")
+
+    def test_the_sweep_leaves_inflight_keys_alone(self):
+        store = KeyStore()
+        store.begin("running", now=0)
+        assert store.begin("other", now=KEY_TTL * 3) == "run"
+        assert "running" in store.entries
+        assert store.duplicates_prevented == 0
