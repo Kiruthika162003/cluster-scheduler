@@ -1,4 +1,4 @@
-"""Backfill rents out the dead hours and pays a known eviction bill.
+"""Backfill rents out the dead hours; the eviction bill turns out to be zero.
 
 A 600m hold opens at tick 50. Without backfill the held cpu idles
 for 50 ticks: 30000 cpu-ticks of paid silence. The guess was 6

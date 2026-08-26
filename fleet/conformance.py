@@ -202,10 +202,17 @@ class Conformance:
         from fleet.conformance2 import SECOND_WAVE
         from fleet.conformance3 import THIRD_WAVE
         from fleet.conformance4 import FOURTH_WAVE
+        from fleet.conformance5 import FIFTH_WAVE
 
         self.results = [
             check()
-            for check in (*EVERY_CHECK, *SECOND_WAVE, *THIRD_WAVE, *FOURTH_WAVE)
+            for check in (
+                *EVERY_CHECK,
+                *SECOND_WAVE,
+                *THIRD_WAVE,
+                *FOURTH_WAVE,
+                *FIFTH_WAVE,
+            )
         ]
         return self.results
 
