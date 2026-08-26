@@ -64,7 +64,7 @@ class TestGameday:
         out = capsys.readouterr().out
         assert "campaign floor across 25 storms: 4 of 8" in out
         assert "replayed seed 13: truthful floor 4 (campaign said 4)" in out
-        assert "all 17 conformance checks hold" in out
+        assert "all 22 conformance checks hold" in out
 
 
 class TestIncident:
@@ -109,7 +109,7 @@ class TestStorefront:
         assert "rollout complete: 4 of 4 available" in out
         assert "refused ['shop-r2-1', 'shop-r2-2', 'shop-r2-3']" in out
         assert "nothing; invariants hold" in out
-        assert "all 17 conformance checks hold" in out
+        assert "all 22 conformance checks hold" in out
 
 
 class TestPatchTuesday:
