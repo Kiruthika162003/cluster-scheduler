@@ -71,3 +71,9 @@ class TestTheLedger:
             "  ancient-orm: 400 behind [plan]",
             "  http-client: 40 behind",
         ]
+
+    def test_repinning_refreshes_the_score(self):
+        ledger = stocked()
+        ledger.pin("ancient-orm", "3.0")
+        assert ledger.libyears()["ancient-orm"] == 0
+        assert ledger.total() == 40

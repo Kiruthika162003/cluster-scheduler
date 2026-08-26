@@ -56,3 +56,10 @@ class TestTheMechanics:
     def test_an_empty_pool_is_refused(self):
         with pytest.raises(Invalid):
             StealingPool(workers=[])
+
+    def test_a_lone_worker_has_nobody_to_rob(self):
+        pool = StealingPool(workers=[Worker(name="only")], stealing=True)
+        pool.workers[0].queue = [5, 5]
+        finish = pool.run()
+        assert finish == 10
+        assert pool.steals == 0

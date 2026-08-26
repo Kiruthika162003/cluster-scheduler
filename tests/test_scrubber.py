@@ -70,3 +70,7 @@ class TestThePromise:
     def test_nonsense_promises_are_refused(self):
         with pytest.raises(Invalid):
             rate_for_promise(block_count=0, within_ticks=10)
+
+    def test_a_ragged_fleet_rounds_its_promise_up(self):
+        scrubber = guarded(count=101, rate=10)
+        assert scrubber.cycle_ticks() == 11

@@ -60,3 +60,10 @@ class TestTheHonesty:
         assert exact_quantile([1.0, 2.0, 3.0, 4.0], 0.5) == 3.0
         with pytest.raises(Invalid):
             exact_quantile([], 0.5)
+
+    def test_a_one_slot_reservoir_still_answers(self):
+        reservoir = Reservoir(size=1)
+        for value in STREAM[:100]:
+            reservoir.offer(value)
+        assert len(reservoir.slots) == 1
+        assert reservoir.quantile(0.5) in STREAM[:100]
