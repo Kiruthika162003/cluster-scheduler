@@ -7,12 +7,20 @@ from fleet.conformance2 import SECOND_WAVE
 from fleet.conformance3 import THIRD_WAVE
 from fleet.conformance4 import FOURTH_WAVE
 from fleet.conformance5 import FIFTH_WAVE
+from fleet.conformance6 import SIXTH_WAVE
 
 
 class TestChecks:
     @pytest.mark.parametrize(
         "check",
-        (*EVERY_CHECK, *SECOND_WAVE, *THIRD_WAVE, *FOURTH_WAVE, *FIFTH_WAVE),
+        (
+            *EVERY_CHECK,
+            *SECOND_WAVE,
+            *THIRD_WAVE,
+            *FOURTH_WAVE,
+            *FIFTH_WAVE,
+            *SIXTH_WAVE,
+        ),
         ids=lambda c: c.__name__,
     )
     def test_the_check_passes(self, check):
@@ -26,6 +34,7 @@ class TestChecks:
             *THIRD_WAVE,
             *FOURTH_WAVE,
             *FIFTH_WAVE,
+            *SIXTH_WAVE,
         ):
             result = check()
             assert result.promise and result.name
@@ -40,6 +49,7 @@ class TestSuite:
             + len(THIRD_WAVE)
             + len(FOURTH_WAVE)
             + len(FIFTH_WAVE)
+            + len(SIXTH_WAVE)
         )
 
     def test_nothing_is_failing(self):
@@ -55,5 +65,6 @@ class TestSuite:
             + len(THIRD_WAVE)
             + len(FOURTH_WAVE)
             + len(FIFTH_WAVE)
+            + len(SIXTH_WAVE)
         )
         assert report.endswith("0 failing")
