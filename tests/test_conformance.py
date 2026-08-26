@@ -9,6 +9,7 @@ from fleet.conformance4 import FOURTH_WAVE
 from fleet.conformance5 import FIFTH_WAVE
 from fleet.conformance6 import SIXTH_WAVE
 from fleet.conformance7 import SEVENTH_WAVE
+from fleet.conformance8 import EIGHTH_WAVE
 
 
 class TestChecks:
@@ -22,6 +23,7 @@ class TestChecks:
             *FIFTH_WAVE,
             *SIXTH_WAVE,
             *SEVENTH_WAVE,
+            *EIGHTH_WAVE,
         ),
         ids=lambda c: c.__name__,
     )
@@ -38,6 +40,7 @@ class TestChecks:
             *FIFTH_WAVE,
             *SIXTH_WAVE,
             *SEVENTH_WAVE,
+            *EIGHTH_WAVE,
         ):
             result = check()
             assert result.promise and result.name
@@ -54,6 +57,7 @@ class TestSuite:
             + len(FIFTH_WAVE)
             + len(SIXTH_WAVE)
             + len(SEVENTH_WAVE)
+            + len(EIGHTH_WAVE)
         )
 
     def test_nothing_is_failing(self):
@@ -71,5 +75,6 @@ class TestSuite:
             + len(FIFTH_WAVE)
             + len(SIXTH_WAVE)
             + len(SEVENTH_WAVE)
+            + len(EIGHTH_WAVE)
         )
         assert report.endswith("0 failing")
