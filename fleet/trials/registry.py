@@ -65,6 +65,7 @@ TRIALS = (
     "fleet.trials.eightbox",
     "fleet.trials.sketchbill",
     "fleet.trials.scrubpromise",
+    "fleet.trials.duckbill",
 )
 
 

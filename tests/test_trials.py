@@ -26,6 +26,7 @@ from fleet.trials import (
     eightbox,
     sketchbill,
     scrubpromise,
+    duckbill,
     filterorder,
     fragmentation,
     ganghostages,
@@ -143,6 +144,7 @@ class TestEveryTrial:
             eightbox,
             sketchbill,
             scrubpromise,
+            duckbill,
         ],
     )
     def test_the_trial_holds(self, trial):
