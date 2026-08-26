@@ -62,6 +62,7 @@ TRIALS = (
     "fleet.trials.hedgeprice",
     "fleet.trials.splitcalm",
     "fleet.trials.queueknee",
+    "fleet.trials.eightbox",
 )
 
 

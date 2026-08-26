@@ -23,6 +23,7 @@ from fleet.trials import (
     hedgeprice,
     splitcalm,
     queueknee,
+    eightbox,
     filterorder,
     fragmentation,
     ganghostages,
@@ -137,6 +138,7 @@ class TestEveryTrial:
             hedgeprice,
             splitcalm,
             queueknee,
+            eightbox,
         ],
     )
     def test_the_trial_holds(self, trial):
