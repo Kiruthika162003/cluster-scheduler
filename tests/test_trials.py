@@ -18,6 +18,7 @@ from fleet.trials import (
     fairqueue,
     fencerace,
     greenshift,
+    hotmoves,
     filterorder,
     fragmentation,
     ganghostages,
@@ -127,6 +128,7 @@ class TestEveryTrial:
             burnalarm,
             fencerace,
             greenshift,
+            hotmoves,
         ],
     )
     def test_the_trial_holds(self, trial):

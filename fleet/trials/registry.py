@@ -57,6 +57,7 @@ TRIALS = (
     "fleet.trials.burnalarm",
     "fleet.trials.fencerace",
     "fleet.trials.greenshift",
+    "fleet.trials.hotmoves",
 )
 
 
