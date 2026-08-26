@@ -64,6 +64,7 @@ TRIALS = (
     "fleet.trials.queueknee",
     "fleet.trials.eightbox",
     "fleet.trials.sketchbill",
+    "fleet.trials.scrubpromise",
 )
 
 
