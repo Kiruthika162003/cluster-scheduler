@@ -10,6 +10,7 @@ from examples import (
     launchday,
     multiteam,
     nocweek,
+    opsreview,
     patchtuesday,
     quarterreview,
     regionfailover,
@@ -39,6 +40,17 @@ class TestExecMonthly:
         assert "platform-idle 20304.0" in out
         assert "ml: up 350%, 8000 to 36000" in out
         assert "ml: +133% of the move" in out
+
+
+class TestOpsReview:
+    def test_five_ledgers_one_meeting(self, capsys):
+        assert opsreview.main() == 0
+        out = capsys.readouterr().out
+        assert "checkout: 3 outages, 94.0000% available" in out
+        assert "change failure rate: 20%" in out
+        assert "n0 vs CVE-1: 6 past deadline" in out
+        assert "ghost: n9 works here but nobody approved it" in out
+        assert "440 libyears across 2 pins (head 40, tail 400)" in out
 
 
 class TestStreamNight:
