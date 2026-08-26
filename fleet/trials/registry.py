@@ -59,6 +59,7 @@ TRIALS = (
     "fleet.trials.greenshift",
     "fleet.trials.hotmoves",
     "fleet.trials.backfillrent",
+    "fleet.trials.hedgeprice",
 )
 
 

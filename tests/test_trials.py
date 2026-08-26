@@ -20,6 +20,7 @@ from fleet.trials import (
     greenshift,
     hotmoves,
     backfillrent,
+    hedgeprice,
     filterorder,
     fragmentation,
     ganghostages,
@@ -131,6 +132,7 @@ class TestEveryTrial:
             greenshift,
             hotmoves,
             backfillrent,
+            hedgeprice,
         ],
     )
     def test_the_trial_holds(self, trial):
