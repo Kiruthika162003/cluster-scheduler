@@ -38,6 +38,9 @@ def main(argv: list[str] | None = None) -> int:
         default="10x20,20x40,40x80",
         help="comma-separated NODESxTASKS rungs",
     )
+    commands.add_parser(
+        "summary", help="one line: trials, checks, and their verdicts"
+    )
     parsed = parser.parse_args(argv)
     if parsed.command == "trials":
         print(report())
@@ -48,6 +51,19 @@ def main(argv: list[str] | None = None) -> int:
         return 1 if suite.failing() else 0
     if parsed.command == "bench":
         return _bench(parsed.sizes)
+    if parsed.command == "summary":
+        from fleet.trials.registry import TRIALS
+
+        suite = Conformance()
+        suite.run()
+        failing = broken()
+        checks_failing = len(suite.failing())
+        print(
+            f"{len(TRIALS)} trials ({len(failing)} broken), "
+            f"{len(suite.results)} conformance checks "
+            f"({checks_failing} failing)"
+        )
+        return 1 if failing or checks_failing else 0
     failing = broken()
     if failing:
         print(f"broken: {', '.join(failing)}")

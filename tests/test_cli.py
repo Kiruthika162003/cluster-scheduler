@@ -24,3 +24,9 @@ class TestCli:
         out = capsys.readouterr().out
         assert "nodes  tasks  evaluations" in out
         assert "exponent 1.0 within budget 1.0" in out
+
+    def test_summary_is_one_honest_line(self, capsys):
+        assert main(["summary"]) == 0
+        out = capsys.readouterr().out
+        assert "trials (0 broken)" in out
+        assert "conformance checks (0 failing)" in out
