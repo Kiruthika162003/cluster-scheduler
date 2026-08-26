@@ -18,3 +18,9 @@ class TestCli:
     def test_a_command_is_required(self):
         with pytest.raises(SystemExit):
             main([])
+
+    def test_bench_prints_the_curve_and_the_gate(self, capsys):
+        assert main(["bench", "--sizes", "5x10,10x20"]) == 0
+        out = capsys.readouterr().out
+        assert "nodes  tasks  evaluations" in out
+        assert "exponent 1.0 within budget 1.0" in out

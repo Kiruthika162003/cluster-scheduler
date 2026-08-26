@@ -62,6 +62,7 @@ ignore = [
 # The second wave imports Check from the first; importing the second wave at
 # module top would close the circle, so the run() import stays local.
 "fleet/conformance.py" = ["PLC0415"]
+"fleet/cli.py" = ["PLC0415"]
 
 [tool.ruff.format]
 quote-style = "double"

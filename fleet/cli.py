@@ -1,4 +1,4 @@
-"""The command line: trials, and the cluster's story on demand."""
+"""The command line: trials, conformance, and the bench, on demand."""
 
 from __future__ import annotations
 
@@ -9,12 +9,35 @@ from fleet.conformance import Conformance
 from fleet.trials.registry import broken, report
 
 
+def _bench(sizes: str) -> int:
+    from fleet.schedbench import Bench
+
+    ladder = []
+    for pair in sizes.split(","):
+        nodes, _, tasks = pair.partition("x")
+        ladder.append((int(nodes), int(tasks)))
+    bench = Bench()
+    bench.ladder(ladder)
+    print(bench.table())
+    passed, why = bench.regression_gate()
+    print(why)
+    return 0 if passed else 1
+
+
 def main(argv: list[str] | None = None) -> int:
     parser = argparse.ArgumentParser(prog="fleet")
     commands = parser.add_subparsers(dest="command", required=True)
     commands.add_parser("trials", help="run every trial and print the report")
     commands.add_parser("check", help="exit nonzero if any trial is broken")
     commands.add_parser("conformance", help="run the conformance suite")
+    bench = commands.add_parser(
+        "bench", help="measure scheduling complexity over a size ladder"
+    )
+    bench.add_argument(
+        "--sizes",
+        default="10x20,20x40,40x80",
+        help="comma-separated NODESxTASKS rungs",
+    )
     parsed = parser.parse_args(argv)
     if parsed.command == "trials":
         print(report())
@@ -23,6 +46,8 @@ def main(argv: list[str] | None = None) -> int:
         suite = Conformance()
         print(suite.report())
         return 1 if suite.failing() else 0
+    if parsed.command == "bench":
+        return _bench(parsed.sizes)
     failing = broken()
     if failing:
         print(f"broken: {', '.join(failing)}")
