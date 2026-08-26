@@ -7,9 +7,10 @@ random slot with probability size/k, deterministically seeded here
 so runs reproduce, which preserves the property that every sample
 seen had an equal chance of being remembered. Quantiles read from
 the reservoir approximate the stream's, and the error is measured
-against the exact answer rather than asserted: on a 10000-sample
-stream a 500-slot reservoir lands within about two percentile
-points, which the honesty method reports as a number, because a
+against the exact answer rather than asserted: the guess was about
+two percentile points for a 500-slot reservoir on a 10000-sample
+stream, and the measurement came in under one, 0.81 at the median
+and 0.18 at p99, because a
 sketch that will not state its error is just a small wrong answer.
 """
 

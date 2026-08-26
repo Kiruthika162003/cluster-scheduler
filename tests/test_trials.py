@@ -24,6 +24,7 @@ from fleet.trials import (
     splitcalm,
     queueknee,
     eightbox,
+    sketchbill,
     filterorder,
     fragmentation,
     ganghostages,
@@ -139,6 +140,7 @@ class TestEveryTrial:
             splitcalm,
             queueknee,
             eightbox,
+            sketchbill,
         ],
     )
     def test_the_trial_holds(self, trial):
