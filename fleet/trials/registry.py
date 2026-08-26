@@ -58,6 +58,7 @@ TRIALS = (
     "fleet.trials.fencerace",
     "fleet.trials.greenshift",
     "fleet.trials.hotmoves",
+    "fleet.trials.backfillrent",
 )
 
 

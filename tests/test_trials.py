@@ -19,6 +19,7 @@ from fleet.trials import (
     fencerace,
     greenshift,
     hotmoves,
+    backfillrent,
     filterorder,
     fragmentation,
     ganghostages,
@@ -129,6 +130,7 @@ class TestEveryTrial:
             fencerace,
             greenshift,
             hotmoves,
+            backfillrent,
         ],
     )
     def test_the_trial_holds(self, trial):
