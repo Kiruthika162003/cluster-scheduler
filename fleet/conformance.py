@@ -204,6 +204,7 @@ class Conformance:
         from fleet.conformance4 import FOURTH_WAVE
         from fleet.conformance5 import FIFTH_WAVE
         from fleet.conformance6 import SIXTH_WAVE
+        from fleet.conformance7 import SEVENTH_WAVE
 
         self.results = [
             check()
@@ -214,6 +215,7 @@ class Conformance:
                 *FOURTH_WAVE,
                 *FIFTH_WAVE,
                 *SIXTH_WAVE,
+                *SEVENTH_WAVE,
             )
         ]
         return self.results
