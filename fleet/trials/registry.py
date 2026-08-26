@@ -60,6 +60,7 @@ TRIALS = (
     "fleet.trials.hotmoves",
     "fleet.trials.backfillrent",
     "fleet.trials.hedgeprice",
+    "fleet.trials.splitcalm",
 )
 
 
