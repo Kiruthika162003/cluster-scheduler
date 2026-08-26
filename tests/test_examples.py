@@ -16,6 +16,7 @@ from examples import (
     releasetrain,
     simweek,
     storefront,
+    stormdrill,
     upgrade,
 )
 
@@ -37,6 +38,17 @@ class TestExecMonthly:
         assert "platform-idle 20304.0" in out
         assert "ml: up 350%, 8000 to 36000" in out
         assert "ml: +133% of the move" in out
+
+
+class TestStormDrill:
+    def test_the_quartet_holds_the_line(self, capsys):
+        assert stormdrill.main() == 0
+        out = capsys.readouterr().out
+        assert "breaker: closed, saved 29 waits" in out
+        assert "amplification 1.012" in out
+        assert "backend spared 88 calls against the naive client" in out
+        assert "db: 2/2 running, 1/1 queued, 3 refused" in out
+        assert "p99 300 -> 62 for 5.0% extra load" in out
 
 
 class TestQuarterReview:
