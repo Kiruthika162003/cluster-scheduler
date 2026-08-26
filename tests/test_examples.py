@@ -17,6 +17,7 @@ from examples import (
     simweek,
     storefront,
     stormdrill,
+    streamnight,
     upgrade,
 )
 
@@ -38,6 +39,17 @@ class TestExecMonthly:
         assert "platform-idle 20304.0" in out
         assert "ml: up 350%, 8000 to 36000" in out
         assert "ml: +133% of the move" in out
+
+
+class TestStreamNight:
+    def test_the_night_reads_honestly(self, capsys):
+        assert streamnight.main() == 0
+        out = capsys.readouterr().out
+        assert "2 stragglers (0 dropped, 2 windows corrected)" in out
+        assert "137 points held from 2000, the 200.0 spike survives" in out
+        assert "robust flags ['n9'], z-score flags []" in out
+        assert "3am at 102: normal for this hour" in out
+        assert "noon at 450: hole" in out
 
 
 class TestStormDrill:
