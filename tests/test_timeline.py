@@ -11,7 +11,7 @@ def storied_fleet() -> Fleet:
         Node(name="n0", capacity=Resources(cpu=1000, memory=1000))
     )
     fleet.submit(
-        "avery",
+        "kiruthika",
         Task(
             spec=TaskSpec(
                 name="batchling",
@@ -22,7 +22,7 @@ def storied_fleet() -> Fleet:
     )
     fleet.step()
     fleet.submit(
-        "avery",
+        "kiruthika",
         Task(
             spec=TaskSpec(
                 name="crit", needs=Resources(cpu=800, memory=800), priority=1500
