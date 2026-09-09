@@ -27,21 +27,21 @@ def task(name: str, cpu: int = 100, **kw) -> Task:
 class TestVerbs:
     def test_submit_queues_and_journals(self):
         fleet = fleet_of()
-        fleet.submit("kiruthika", task("t"))
+        fleet.submit("avery", task("t"))
         fleet.step()
         assert fleet.store.get_task("t").is_active()
         assert "submit t" in fleet.journal.story("t")
 
     def test_delete_forgets_the_queue_entry_too(self):
         fleet = fleet_of()
-        fleet.submit("kiruthika", task("t"))
-        fleet.delete("kiruthika", "t")
+        fleet.submit("avery", task("t"))
+        fleet.delete("avery", "t")
         assert "t" not in fleet.store.tasks
         assert "t" not in fleet.engine.queue.waiting
 
     def test_deleting_a_ghost_is_not_found(self):
         with pytest.raises(NotFound):
-            fleet_of().delete("kiruthika", "ghost")
+            fleet_of().delete("avery", "ghost")
 
     def test_apply_and_scale_share_one_spelling(self):
         fleet = fleet_of()
@@ -50,39 +50,39 @@ class TestVerbs:
             replicas=2,
             template=TaskSpec(name="tpl", needs=Resources(cpu=100, memory=100)),
         )
-        fleet.apply_deploy("kiruthika", spec)
-        fleet.scale("kiruthika", "web", 4)
+        fleet.apply_deploy("avery", spec)
+        fleet.scale("avery", "web", 4)
         assert len(fleet.store.tasks) == 4
         assert "replicas 4" in fleet.journal.story("web")
 
     def test_scaling_an_unapplied_deploy_is_not_found(self):
         with pytest.raises(NotFound):
-            fleet_of().scale("kiruthika", "ghost", 3)
+            fleet_of().scale("avery", "ghost", 3)
 
 
 class TestNodeVerbs:
     def test_cordon_stops_placement_and_journals(self):
         fleet = fleet_of(nodes=1)
-        fleet.cordon("kiruthika", "n0")
-        fleet.submit("kiruthika", task("t"))
+        fleet.cordon("avery", "n0")
+        fleet.submit("avery", task("t"))
         placed, benched = fleet.step()
         assert placed == 0 and benched == 1
         assert "cordon n0" in fleet.journal.story("n0")
 
     def test_uncordon_reopens_the_node(self):
         fleet = fleet_of(nodes=1)
-        fleet.cordon("kiruthika", "n0")
-        fleet.uncordon("kiruthika", "n0")
-        fleet.submit("kiruthika", task("t"))
+        fleet.cordon("avery", "n0")
+        fleet.uncordon("avery", "n0")
+        fleet.submit("avery", task("t"))
         placed, _ = fleet.step()
         assert placed == 1
 
     def test_drain_cordons_evicts_and_requeues(self):
         fleet = fleet_of()
-        fleet.submit("kiruthika", task("t"))
+        fleet.submit("avery", task("t"))
         fleet.step()
         home = fleet.store.get_task("t").node
-        evicted, refused = fleet.drain("kiruthika", home)
+        evicted, refused = fleet.drain("avery", home)
         assert evicted == ["t"] and refused == []
         fleet.step()
         assert fleet.store.get_task("t").node != home
@@ -97,7 +97,7 @@ class TestNodeVerbs:
                 min_available=1,
             )
         )
-        fleet.submit("kiruthika", task("w", labels=(("app", "web"),)))
+        fleet.submit("avery", task("w", labels=(("app", "web"),)))
         fleet.step()
-        evicted, refused = fleet.drain("kiruthika", "n0")
+        evicted, refused = fleet.drain("avery", "n0")
         assert evicted == [] and refused == ["w"]

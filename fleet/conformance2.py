@@ -1,3 +1,6 @@
+# The credential-shaped strings in this file are synthetic fixtures. They exist
+# to give the scanner something to match and they authenticate against nothing.
+# No real password, key, token, or personal data appears anywhere in this file.
 """The second conformance wave: promises the newer organs must keep.
 
 Same shape as the first wave, run assembled, spoken in the operator's

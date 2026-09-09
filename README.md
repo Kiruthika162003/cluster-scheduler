@@ -65,8 +65,3 @@ happened. Errors are named refusals, not stack traces. Reports are
 sentences an operator would say. The suite's rule for itself is the
 repository's rule for everything: a claim without a number attached
 is a feeling, and feelings do not page.
-
-## Attribution
-
-Written by Kiruthika Subramani in collaboration with Claude,
-Anthropic's AI assistant.
